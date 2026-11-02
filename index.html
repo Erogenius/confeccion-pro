@@ -10,7 +10,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Confección Pro 1.45</title>
+<title>Confección Pro 1.50</title>
 <style>
 :root{--navy:#172554;--blue:#2563eb;--bg:#f3f6fb;--card:#fff;--ink:#172033;--muted:#64748b;--line:#e2e8f0;--green:#15803d;--red:#b91c1c}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
@@ -155,12 +155,15 @@ footer{color:var(--muted);font-size:11px;text-align:center;padding:12px}
 .picker-dialog{background:#fff;color:#172033;width:min(100%,620px);max-height:82vh;overflow:auto;border-radius:20px;padding:18px;box-shadow:0 12px 40px rgba(0,0,0,.25)}
 .picker-dialog h3{margin:0}
 .picker-dialog .catalog-checks{max-height:48vh;overflow:auto}
+.quick-catalog-form{margin-top:12px;padding:12px;background:#f8fafc;border:1px solid #dbe3ef;border-radius:12px}
+.quick-catalog-form[hidden]{display:none}
+.quick-catalog-form h3{margin-bottom:10px}
 
 .value{font-weight:600;padding:8px 10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;min-height:20px;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
-<header><h1>Confección Pro 1.45</h1><p>Gestión de producción y costos · Bolivianos (Bs)</p></header>
+<header><h1>Confección Pro 1.50</h1><p>Gestión de producción y costos · Bolivianos (Bs)</p></header>
 <main>
 <div id="storageStatus" class="muted" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:9px 12px;margin:8px 0 12px">Preparando almacenamiento local…</div>
 
@@ -195,7 +198,18 @@ footer{color:var(--muted);font-size:11px;text-align:center;padding:12px}
 <div class="card">
 <h2>Nueva orden</h2>
 <div class="grid">
-<div class="field"><label>Cliente</label><select id="orderClient"><option value="">Selecciona cliente</option></select></div>
+<div class="field"><label>Cliente</label><select id="orderClient"><option value="">Selecciona cliente</option></select>
+<div class="actions" style="margin-top:7px"><button class="secondary small" type="button" id="showQuickClientForm">+ Añadir cliente nuevo</button></div>
+<div id="quickClientForm" class="quick-catalog-form" hidden>
+ <h3>Nuevo cliente</h3>
+ <div class="field"><label>Nombre / razón social</label><input id="quickClientName" placeholder="Ej. Colegio Franco Boliviano"></div>
+ <div class="grid">
+  <div class="field"><label>Teléfono</label><input id="quickClientPhone" type="tel" placeholder="Opcional"></div>
+  <div class="field"><label>Procedencia</label><select id="quickClientSource"><option value="">Seleccionar procedencia</option><option>TikTok</option><option>Facebook</option><option>Instagram</option><option>Redes sociales</option><option>Referido</option><option>Etiqueta de la prenda</option><option>WhatsApp</option><option>Otro</option></select></div>
+ </div>
+ <div class="actions"><button class="primary" type="button" id="saveQuickClient">Guardar y seleccionar</button><button class="secondary" type="button" id="cancelQuickClient">Cancelar</button></div>
+</div>
+</div>
 <div class="field full">
 <label>Cómo definir la fecha de entrega</label>
 <select id="dueMode"><option value="manual">Elegir fecha manualmente</option><option value="business">Calcular por días hábiles</option></select>
@@ -214,7 +228,7 @@ footer{color:var(--muted);font-size:11px;text-align:center;padding:12px}
 <div class="field full"><label>Producto / descripción</label><input id="product" placeholder="Ej. 20 camisas institucionales"></div>
 <div class="field full"><label>Fotografías de este producto (máximo 4)</label><input id="productImages" type="file" accept="image/*" multiple><div class="muted">Cada producto puede tener hasta 4 fotografías. Se optimizan y se guardan en este dispositivo.</div><div id="productImagePreview" class="image-preview"></div></div>
 <div class="field"><label>Cantidad de unidades</label><input id="qty" type="number" min="1" step="1" value="1"></div>
-<div class="field"><label>Precio de venta por unidad (Bs)</label><input id="unitPrice" type="number" min="0" step="0.01" value="0"></div>
+<div class="field"><label>Precio de venta por unidad (Bs)</label><input id="unitPrice" type="number" min="0" step="0.01" value="100"></div>
 
 
 
@@ -228,6 +242,16 @@ footer{color:var(--muted);font-size:11px;text-align:center;padding:12px}
   <div class="itemtop"><h3 id="catalogPickerTitle">Seleccionar opciones</h3><button class="secondary small" type="button" id="closeCatalogPicker">Cerrar</button></div>
   <p class="muted" id="catalogPickerHelp">Marca una o varias opciones y agrégalas al producto.</p>
   <div id="catalogPickerOptions" class="catalog-checks"></div>
+  <div class="actions"><button class="secondary" type="button" id="showQuickCatalogForm">+ Crear material nuevo</button></div>
+  <div id="quickCatalogForm" class="quick-catalog-form" hidden>
+   <h3 id="quickCatalogTitle">Nuevo material</h3>
+   <div class="field"><label id="quickCatalogNameLabel">Nombre del material</label><input id="quickCatalogName" placeholder="Ej. Tela gabardina"></div>
+   <div class="grid">
+    <div class="field"><label id="quickCatalogUnitLabel">Unidad</label><select id="quickCatalogUnit"><option value="metro">Metro</option><option value="unidad">Unidad</option><option value="kilo">Kilo</option><option value="rollo">Rollo</option><option value="docena">Docena</option><option value="litro">Litro</option></select></div>
+    <div class="field"><label>Precio (Bs)</label><input id="quickCatalogPrice" type="number" min="0" step="0.01" placeholder="0.00"></div>
+   </div>
+   <div class="actions"><button class="primary" type="button" id="saveQuickCatalog">Guardar y seleccionar</button><button class="secondary" type="button" id="cancelQuickCatalog">Cancelar</button></div>
+  </div>
   <div class="actions"><button class="primary" type="button" id="confirmCatalogPicker">Agregar seleccionados</button></div>
  </div>
 </div>
@@ -321,7 +345,7 @@ footer{color:var(--muted);font-size:11px;text-align:center;padding:12px}
 </div>
 <div class="card"><h2>Sobre tus datos</h2><p class="muted">Este prototipo no transmite los datos a un servidor. La copia JSON no está cifrada: no la compartas por canales públicos.</p></div>
 </section>
-<footer>Confección Pro 1.45 · Base local IndexedDB · Producción, entregas y reportes</footer>
+<footer>Confección Pro 1.50 · Base local IndexedDB · Producción, entregas y reportes</footer>
 </main>
 <script>
 const $=id=>document.getElementById(id);
@@ -446,11 +470,36 @@ function openCatalogPicker(type){
  activeCatalogPickerType=type;
  $('catalogPickerTitle').textContent=type==='material'?'Seleccionar materiales':'Seleccionar mano de obra';
  $('catalogPickerHelp').textContent='Marca todas las opciones que necesites. Luego podrás editar cantidades y precios en el desglose.';
+ $('quickCatalogForm').hidden=true;$('quickCatalogName').value='';$('quickCatalogPrice').value='';$('showQuickCatalogForm').textContent=type==='material'?'+ Crear material nuevo':'+ Crear mano de obra nueva';
  renderMultiCatalogPickers();
  $('catalogPickerModal').hidden=false;
 }
 function closeCatalogPicker(){ $('catalogPickerModal').hidden=true; }
 $('closeCatalogPicker').onclick=closeCatalogPicker;
+$('showQuickCatalogForm').onclick=()=>{
+ const isMaterial=activeCatalogPickerType==='material';
+ $('quickCatalogTitle').textContent=isMaterial?'Nuevo material':'Nueva mano de obra';
+ $('quickCatalogNameLabel').textContent=isMaterial?'Nombre del material':'Trabajo / servicio';
+ $('quickCatalogName').placeholder=isMaterial?'Ej. Tela gabardina':'Ej. Confección de camisa';
+ $('quickCatalogUnitLabel').textContent=isMaterial?'Unidad':'Forma de cobro';
+ $('quickCatalogUnit').innerHTML=isMaterial?'<option value="metro">Metro</option><option value="unidad">Unidad</option><option value="kilo">Kilo</option><option value="rollo">Rollo</option><option value="docena">Docena</option><option value="litro">Litro</option>':'<option value="unidad">Por unidad</option><option value="metro">Por metro</option>';
+ $('quickCatalogForm').hidden=false;$('quickCatalogName').focus();
+};
+$('cancelQuickCatalog').onclick=()=>{$('quickCatalogForm').hidden=true;};
+$('saveQuickCatalog').onclick=()=>{
+ const name=$('quickCatalogName').value.trim(),unit=$('quickCatalogUnit').value,price=Number($('quickCatalogPrice').value);
+ if(!name||$('quickCatalogPrice').value.trim()===''||!Number.isFinite(price)||price<0)return alert('Completa el nombre y un precio válido.');
+ const id=createId();
+ if(activeCatalogPickerType==='material'){
+  materials.push({id,name,unit,price,active:true});save('cp_materials',materials);refreshMaterials();
+  renderMultiCatalogPickers();const cb=$(`[data-modal-material="${id}"]`);if(cb)cb.checked=true;
+ }else{
+  laborItems.push({id,name,unit,price,active:true});save('cp_labor',laborItems);refreshLabor();
+  renderMultiCatalogPickers();const cb=$(`[data-modal-labor="${id}"]`);if(cb)cb.checked=true;
+ }
+ $('quickCatalogName').value='';$('quickCatalogPrice').value='';$('quickCatalogForm').hidden=true;
+ alert('Guardado en el catálogo y seleccionado para esta orden.');
+};
 $('catalogPickerModal').addEventListener('click',e=>{if(e.target===$('catalogPickerModal'))closeCatalogPicker();});
 $('confirmCatalogPicker').onclick=()=>{
  if(activeCatalogPickerType==='material'){
@@ -499,7 +548,7 @@ function renderCostRows(){
     else {row.laborId='';row.catalogUnit='';}
     renderCostRows();
   });
-  el.querySelectorAll('input[data-k]:not([type=checkbox])').forEach(inp=>inp.addEventListener('input',()=>{row[inp.dataset.k]=inp.dataset.k==='name'?inp.value:Math.max(0,Number(inp.value)||0);calculate();let subtotal=el.querySelector('input[disabled]');subtotal.value=money(row.qty*row.unit*(row.type==='labor'&&row.catalogUnit!=='unidad'?Math.max(1,Math.floor(Number($('qty').value)||1)):1));}));
+  el.querySelectorAll('input[data-k]:not([type=checkbox])').forEach(inp=>inp.addEventListener('input',()=>{row[inp.dataset.k]=inp.dataset.k==='name'?inp.value:Math.max(0,Number(inp.value)||0);calculate();let subtotal=el.querySelector('input[disabled]');subtotal.value=money(row.qty*row.unit);}));
   const paidBox=el.querySelector('input[data-k=paid]');
   if(paidBox) paidBox.addEventListener('change',()=>{row.paid=paidBox.checked;});
   el.querySelector('.remove').onclick=()=>{costRows=costRows.filter(x=>x.id!==id);renderCostRows();calculate();};
@@ -519,8 +568,8 @@ function calcData(){
  const price=Math.max(0,Number($('unitPrice').value)||0),sale=qty*price;
  return {qty,direct,labor,indirect,waste,baseCost,contingency,cost,unitCost:cost/qty,price,sale,profit:sale-cost,unitProfit:(sale-cost)/qty,margin:sale?((sale-cost)/sale*100):0};
 }
-function calculate(){const d=calcData();if(!window.cpContingencyManual)window.cpContingencyBudget=d.contingency;document.querySelectorAll('#costLines .line').forEach(el=>{const r=costRows.find(x=>x.id===el.dataset.id);const sub=el.querySelector('input[disabled]');if(r&&sub)sub.value=money(r.qty*r.unit);});$('directSum').textContent=money(d.direct);$('laborSum').textContent=money(d.labor);$('indirectSum').textContent=money(d.indirect);$('totalCost').textContent=money(d.cost);$('unitCost').textContent=money(d.unitCost);$('unitProfit').textContent=money(d.unitProfit);$('totalSale').textContent=money(d.sale);$('totalProfit').textContent=money(d.profit);$('margin').textContent=d.margin.toFixed(1)+'%';renderUnexpectedRows();}
-['qty','unitPrice'].forEach(id=>$(id).addEventListener('input',calculate));
+function calculate(){let d=calcData();if(!window.cpUnitPriceManual){const suggested=Math.max(0,d.unitCost+100);$('unitPrice').value=suggested.toFixed(2);d=calcData();}if(!window.cpContingencyManual)window.cpContingencyBudget=d.contingency;document.querySelectorAll('#costLines .line').forEach(el=>{const r=costRows.find(x=>x.id===el.dataset.id);const sub=el.querySelector('input[disabled]');if(r&&sub)sub.value=money(r.qty*r.unit);});$('directSum').textContent=money(d.direct);$('laborSum').textContent=money(d.labor);$('indirectSum').textContent=money(d.indirect);$('totalCost').textContent=money(d.cost);$('unitCost').textContent=money(d.unitCost);$('unitProfit').textContent=money(d.unitProfit);$('totalSale').textContent=money(d.sale);$('totalProfit').textContent=money(d.profit);$('margin').textContent=d.margin.toFixed(1)+'%';renderUnexpectedRows();}
+$('qty').addEventListener('input',calculate);$('unitPrice').addEventListener('input',()=>{window.cpUnitPriceManual=true;calculate();});
 $('contingencyAmount').addEventListener('input',()=>{window.cpContingencyManual=true;window.cpContingencyBudget=Math.max(0,Number($('contingencyAmount').value)||0)+getUnexpectedSpent();calculate();renderUnexpectedRows();});
 $('addMaterial').onclick=()=>openCatalogPicker('material');$('addConsumable').onclick=()=>addCostRow('consumable');$('addLabor').onclick=()=>openCatalogPicker('labor');$('addIndirect').onclick=()=>addCostRow('indirect');
 function refreshClients(){
@@ -528,6 +577,27 @@ function refreshClients(){
  $('orderClient').innerHTML='<option value="">Selecciona cliente</option>'+active.map(c=>`<option value="${c.id}">${safe(c.name)}</option>`).join('');
  $('clientsList').innerHTML=active.length?active.map(c=>`<div class="item itemtop"><div><strong>${safe(c.name)}</strong><div class="muted">${safe(c.phone||'Sin teléfono')} · Procedencia: ${safe(c.source||'No especificada')}</div></div><div class="actions"><button class="secondary small" type="button" onclick="editClient('${c.id}')">Modificar</button><button class="danger small" type="button" onclick="deleteClient('${c.id}')">Eliminar</button></div></div>`).join(''):'<div class="empty">Todavía no hay clientes activos.</div>';
 }
+
+
+$('showQuickClientForm').onclick=()=>{
+ $('quickClientForm').hidden=false;
+ $('quickClientName').focus();
+};
+$('cancelQuickClient').onclick=()=>{
+ $('quickClientForm').hidden=true;
+ $('quickClientName').value='';$('quickClientPhone').value='';$('quickClientSource').value='';
+};
+$('saveQuickClient').onclick=()=>{
+ const name=$('quickClientName').value.trim();
+ if(!name)return alert('Escribe el nombre del cliente.');
+ const client={id:createId(),name,phone:$('quickClientPhone').value.trim(),source:$('quickClientSource').value.trim(),active:true};
+ clients.push(client);
+ save('cp_clients',clients);
+ refreshClients();
+ $('orderClient').value=client.id;
+ $('quickClientForm').hidden=true;
+ $('quickClientName').value='';$('quickClientPhone').value='';$('quickClientSource').value='';
+};
 
 function refreshLabor(){
  renderMultiCatalogPickers();const active=laborItems.filter(m=>m.active!==false);
@@ -815,9 +885,10 @@ $('addUnexpected').onclick=()=>{
 };
 function snapshotCurrentProduct(){
  const d=calcData();
- return {name:$('product').value.trim(),qty:d.qty,unitPrice:d.price,unitCost:d.unitCost,unitProfit:d.unitProfit,cost:d.cost,baseCost:d.baseCost,contingency:d.contingency,contingencyBudget:getContingencyBudget(),contingencyManual:!!window.cpContingencyManual,unexpectedRows:unexpectedRows.map(r=>({...r})),sale:d.sale,profit:d.profit,margin:d.margin,costDetails:costRows.map(r=>({...r})),images:productImages.slice(0,4),status:productDrafts[activeProductIndex]?.status||'Pendiente de iniciar'};
+ return {name:$('product').value.trim(),qty:d.qty,unitPrice:d.price,unitPriceManual:!!window.cpUnitPriceManual,unitCost:d.unitCost,unitProfit:d.unitProfit,cost:d.cost,baseCost:d.baseCost,contingency:d.contingency,contingencyBudget:getContingencyBudget(),contingencyManual:!!window.cpContingencyManual,unexpectedRows:unexpectedRows.map(r=>({...r})),sale:d.sale,profit:d.profit,margin:d.margin,costDetails:costRows.map(r=>({...r})),images:productImages.slice(0,4),status:productDrafts[activeProductIndex]?.status||'Pendiente de iniciar'};
 }
 function loadProductIntoEditor(p){
+ window.cpUnitPriceManual=p.unitPriceManual!==undefined?!!p.unitPriceManual:true;
  productImages=Array.isArray(p.images)?p.images.slice(0,4):[];renderProductImagePreview();
  $('product').value=p.name||'';$('qty').value=p.qty||1;$('unitPrice').value=p.unitPrice||0;
  costRows=(p.costDetails||[]).map(r=>({...r,id:createId()}));unexpectedRows=Array.isArray(p.unexpectedRows)?p.unexpectedRows.map(r=>({...r})):[];window.cpContingencyManual=!!p.contingencyManual;window.cpContingencyBudget=Number(p.contingencyBudget??p.contingency)||0;renderUnexpectedRows();
@@ -839,7 +910,7 @@ window.selectOrderProduct=i=>{
 };
 window.removeOrderProduct=i=>{
  if(!confirm('¿Quitar este producto de la orden?'))return;
- if(i===activeProductIndex){productDrafts.splice(i,1);activeProductIndex=Math.max(0,Math.min(i,productDrafts.length-1));if(productDrafts[activeProductIndex])loadProductIntoEditor(productDrafts[activeProductIndex]);else{ $('product').value='';$('qty').value=1;$('unitPrice').value=0;productImages=[];renderProductImagePreview();costRows=[];unexpectedRows=[];renderUnexpectedRows();renderCostRows();calculate();}}
+ if(i===activeProductIndex){productDrafts.splice(i,1);activeProductIndex=Math.max(0,Math.min(i,productDrafts.length-1));if(productDrafts[activeProductIndex])loadProductIntoEditor(productDrafts[activeProductIndex]);else{ $('product').value='';$('qty').value=1;window.cpUnitPriceManual=false;$('unitPrice').value=100;productImages=[];renderProductImagePreview();costRows=[];unexpectedRows=[];renderUnexpectedRows();renderCostRows();calculate();}}
  else productDrafts.splice(i,1);
  if(activeProductIndex>=productDrafts.length)activeProductIndex=Math.max(0,productDrafts.length-1);
  renderOrderProductsList();
@@ -847,14 +918,14 @@ window.removeOrderProduct=i=>{
 $('addOrderProduct').onclick=()=>{
  if(!$('product').value.trim())return alert('Escribe el nombre o descripción del producto actual antes de agregar otro.');
  saveActiveProductDraft();
- productDrafts.push({name:'',qty:1,unitPrice:0,advance:0,costDetails:[],status:'Pendiente de iniciar',contingencyManual:false,images:[]});
+ productDrafts.push({name:'',qty:1,unitPrice:100,unitPriceManual:false,advance:0,costDetails:[],status:'Pendiente de iniciar',contingencyManual:false,images:[]});
  activeProductIndex=productDrafts.length-1;
  loadProductIntoEditor(productDrafts[activeProductIndex]);renderOrderProductsList();$('product').focus();
 };
 
 function resetOrderForm(){
  editingOrderId=null;productDrafts=[];activeProductIndex=0;window.cpContingencyBudget=0;renderOrderProductsList();orderImages=[];productImages=[];renderProductImagePreview();window.cpContingencyManual=false;window.cpContingencyBudget=0;$('contingencyAmount').value='';
- $('orderClient').value='';$('product').value='';$('qty').value='1';$('unitPrice').value='0';
+ $('orderClient').value='';$('product').value='';$('qty').value='1';window.cpUnitPriceManual=false;$('unitPrice').value='100';
  $('advance').value='0';$('dueDate').value='';$('dueMode').value='manual';$('startDate').value=isoDateLocal(new Date());$('businessDays').value='10';$('notes').value='';updateDueDate();
  costRows=[];unexpectedRows=[];renderUnexpectedRows();renderCostRows();$('saveOrder').textContent='Guardar orden';$('cancelEdit').hidden=true;calculate();
 }
@@ -864,7 +935,7 @@ window.editOrder=id=>{
  $('advance').value=o.advance||0;
  $('orderClient').value=o.clientId||clients.find(c=>c.name===o.clientName)?.id||'';
  if(o.clientId&&!Array.from($('orderClient').options).some(opt=>opt.value===o.clientId)){const snap=o.clientSnapshot||{id:o.clientId,name:o.clientName};const opt=document.createElement('option');opt.value=o.clientId;opt.textContent=(snap.name||o.clientName)+' (histórico)';$('orderClient').appendChild(opt);$('orderClient').value=o.clientId;}
- const legacyProduct={name:o.product||'',qty:o.qty||1,unitPrice:o.unitPrice??o.price??0,advance:o.advance||0,unitCost:o.unitCost||0,unitProfit:o.unitProfit||0,cost:o.cost||0,baseCost:o.baseCost||o.cost||0,contingency:o.contingency||0,contingencyManual:!!o.contingencyManual,sale:o.sale||0,profit:o.profit||0,margin:o.margin||0,costDetails:o.costDetails||[],status:o.status||'Pendiente de iniciar'};
+ const legacyProduct={name:o.product||'',qty:o.qty||1,unitPrice:o.unitPrice??o.price??0,unitPriceManual:true,advance:o.advance||0,unitCost:o.unitCost||0,unitProfit:o.unitProfit||0,cost:o.cost||0,baseCost:o.baseCost||o.cost||0,contingency:o.contingency||0,contingencyManual:!!o.contingencyManual,sale:o.sale||0,profit:o.profit||0,margin:o.margin||0,costDetails:o.costDetails||[],status:o.status||'Pendiente de iniciar'};
  productDrafts=Array.isArray(o.products)&&o.products.length?o.products.map(p=>({...p,costDetails:(p.costDetails||[]).map(r=>({...r}))})):[legacyProduct];activeProductIndex=0;loadProductIntoEditor(productDrafts[0]);renderOrderProductsList();
  orderImages=Array.isArray(o.images)?o.images.slice(0,3):[];$('dueMode').value=o.dueMode||'manual';$('startDate').value=o.startDate||isoDateLocal(new Date());$('businessDays').value=o.businessDays||10;$('dueDate').value=o.due||'';$('notes').value=o.notes||'';updateDueDate();$('saveOrder').textContent='Guardar cambios';$('cancelEdit').hidden=false;
  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab==='ordenes'));
