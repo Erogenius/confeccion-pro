@@ -1,0 +1,32 @@
+CONFECCIÓN PRO 1.33
+
+Novedad:
+- Sección «Administrar base de datos» dentro de Respaldo.
+- Muestra el motor local, nombre de base, cantidad de elementos, uso de almacenamiento del sitio y última modificación registrada.
+- Permite actualizar la información y descargar una copia JSON de los datos.
+
+Almacenamiento:
+- IndexedDB (base ConfeccionProDB), dentro del perfil de Chrome.
+- La base no aparece como archivo independiente en Descargas.
+- La copia JSON es el formato de respaldo y transferencia entre dispositivos.
+- Cada dispositivo mantiene su propia base local; sincronización automática todavía no incluida.
+
+Recomendaciones:
+- Conserva el ZIP anterior hasta probar esta versión.
+- No borres los datos del sitio en Chrome.
+- Exporta respaldos JSON periódicamente.
+
+Actualización de gestión de registros:
+- Clientes: ahora se pueden modificar y retirar del listado activo. Las órdenes conservan el nombre y una copia de los datos históricos del cliente.
+- Materiales: ahora se pueden modificar y retirar del catálogo activo. Las órdenes mantienen el nombre, cantidad, unidad y precio guardados originalmente.
+- Mano de obra: ahora se pueden modificar y retirar del catálogo activo. Las órdenes mantienen el servicio, modalidad, cantidad y precio originales.
+- La eliminación es lógica: los registros se marcan como inactivos y dejan de ofrecerse en nuevas órdenes; no se borran las referencias históricas.
+
+
+ACCESO COMO APLICACION (PWA)
+Esta carpeta ya incluye el nombre, iconos, manifiesto y servicio offline para instalar Confeccion Pro como acceso de pantalla completa.
+
+IMPORTANTE:
+Android/Chrome solo permite instalar una PWA cuando se abre desde una direccion segura HTTPS (o desde localhost). Abrir index.html directamente desde el administrador de archivos (content://) no permite registrar el service worker ni garantiza que aparezca "Instalar aplicacion".
+Para tener el icono instalable, publica esta carpeta en un alojamiento HTTPS y abre esa direccion con Chrome. Luego toca ⋮ > Instalar aplicacion o Añadir a pantalla de inicio.
+Los datos siguen guardandose localmente en el navegador/dispositivo. La instalacion no sincroniza datos entre telefonos.
