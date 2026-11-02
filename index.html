@@ -10,7 +10,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Confección Pro 1.33</title>
+<title>Confección Pro 1.45</title>
 <style>
 :root{--navy:#172554;--blue:#2563eb;--bg:#f3f6fb;--card:#fff;--ink:#172033;--muted:#64748b;--line:#e2e8f0;--green:#15803d;--red:#b91c1c}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
@@ -47,7 +47,32 @@ button.small{padding:7px 9px;font-size:12px}
 .summary .contingency-row{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;margin:6px 0 9px}
 .summary .contingency-row label{display:block;flex:1;min-width:0;font-size:13px;font-weight:600;color:#475569;line-height:1.35}
 .summary .contingency-row input{display:block;flex:0 0 42%;width:42%;max-width:170px!important;min-width:118px;min-height:46px;box-sizing:border-box;text-align:right;padding:10px 13px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;font-size:16px;font-weight:600;color:#172033;font-variant-numeric:tabular-nums}
+
 .summary .contingency-row input:focus{outline:2px solid rgba(37,99,235,.18);border-color:#2563eb}
+.summary .unexpected-box{display:block;margin:10px 0;padding:12px;background:#fff;border:1px solid #dbe3ef;border-radius:12px;min-width:0;max-width:100%;box-sizing:border-box}
+.summary .unexpected-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.summary .unexpected-list{display:block;margin-top:8px;min-width:0}
+.summary .unexpected-item{display:grid;grid-template-columns:minmax(0,1fr) 34px;align-items:center;gap:8px;padding:7px 0;border-top:1px solid #e2e8f0;min-width:0}
+.summary .unexpected-item-info{display:block;min-width:0;overflow-wrap:anywhere}
+.summary .unexpected-item-actions{display:flex;align-items:center;justify-content:flex-end;gap:0;flex-wrap:nowrap}
+.summary .unexpected-item-actions .danger.small{margin:0;line-height:1;font-size:14px;flex:0 0 32px}
+.summary .unexpected-item-info b{display:block;line-height:1.25}
+.summary .unexpected-item-info .muted{line-height:1.25;margin-top:2px}
+.unexpected-item-actions label{display:flex;align-items:center;gap:5px;font-size:12px;white-space:nowrap}
+.unexpected-item-actions input{width:18px;height:18px}
+.summary .contingency-hint{display:block;font-size:11px;color:#64748b;margin:-3px 0 8px}
+@media(max-width:560px){
+ .summary .contingency-row{gap:8px;align-items:flex-start}
+ .summary .contingency-row label{font-size:12px}
+ .summary .contingency-row input{flex:0 0 40%;width:40%;min-width:105px;max-width:145px!important}
+ .unexpected-box{padding:10px}
+ .summary .unexpected-head{align-items:flex-start}
+ .summary .unexpected-head b{flex:1 1 100%}
+ .summary .unexpected-head button{width:100%}
+ .summary .unexpected-item{grid-template-columns:minmax(0,1fr) 34px;gap:8px;padding:7px 0}
+ .summary .unexpected-item-actions{justify-content:flex-end}
+ .summary .unexpected-item-actions button{width:32px;height:32px;min-width:32px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:9px}
+}
 
 hr{border:0;border-top:1px solid var(--line);margin:12px 0}
 footer{color:var(--muted);font-size:11px;text-align:center;padding:12px}
@@ -135,7 +160,7 @@ footer{color:var(--muted);font-size:11px;text-align:center;padding:12px}
 </style>
 </head>
 <body>
-<header><h1>Confección Pro 1.33</h1><p>Gestión de producción y costos · Bolivianos (Bs)</p></header>
+<header><h1>Confección Pro 1.45</h1><p>Gestión de producción y costos · Bolivianos (Bs)</p></header>
 <main>
 <div id="storageStatus" class="muted" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:9px 12px;margin:8px 0 12px">Preparando almacenamiento local…</div>
 
@@ -213,7 +238,12 @@ footer{color:var(--muted);font-size:11px;text-align:center;padding:12px}
 
 <div><span class="muted">Mano de obra</span><b id="laborSum">Bs 0,00</b></div>
 <div><span class="muted">Costos indirectos</span><b id="indirectSum">Bs 0,00</b></div>
-<div class="contingency-row"><label for="contingencyAmount">Imprevistos (Bs) · automático 10%, editable</label><input id="contingencyAmount" type="number" min="0" step="0.01" value="0" style="max-width:150px"></div>
+<div class="contingency-row"><label for="contingencyAmount">Presupuesto disponible de imprevistos (Bs)</label><input id="contingencyAmount" type="number" min="0" step="0.01" value="0" aria-describedby="contingencyHint"></div>
+<div class="contingency-hint" id="contingencyHint">Se descuenta automáticamente cada imprevisto registrado.</div>
+<div class="unexpected-box">
+ <div class="unexpected-head"><b>Imprevistos reales</b><button class="secondary small" id="addUnexpected" type="button">+ Registrar imprevisto</button></div>
+ <div id="unexpectedList" class="unexpected-list">Todavía no hay imprevistos registrados.</div>
+</div>
 <hr>
 <div><span>Costo total del producto</span><b id="totalCost">Bs 0,00</b></div>
 <div><span>Costo por unidad</span><b id="unitCost">Bs 0,00</b></div>
@@ -228,6 +258,18 @@ footer{color:var(--muted);font-size:11px;text-align:center;padding:12px}
 <div class="actions"><button class="primary" id="saveOrder">Guardar orden</button><button class="secondary" id="cancelEdit" type="button" hidden>Cancelar edición</button></div>
 </div>
 <div class="card"><h2>Órdenes registradas</h2><div id="ordersList" class="empty">Todavía no hay órdenes.</div></div>
+<div class="card global-cash-card" id="globalCashSummary">
+ <div class="itemtop"><h2 style="margin:0">Resumen financiero global</h2><span class="status">Todas las órdenes</span></div>
+ <p class="muted">Consolidado de todos los pedidos registrados, sin importar el cliente o la fecha.</p>
+ <div class="statgrid">
+  <div class="stat"><small>Total recibido de clientes</small><strong id="globalCashReceived">Bs 0,00</strong><small>Anticipos registrados</small></div>
+  <div class="stat"><small>Gastos efectivamente pagados</small><strong id="globalCashPaid">Bs 0,00</strong><small>Materiales, mano de obra y otros conceptos marcados como pagados</small></div>
+  <div class="stat"><small>Dinero disponible para producción</small><strong id="globalCashAvailable">Bs 0,00</strong><small>Costos totales de todas las órdenes menos gastos efectivamente pagados</small></div>
+  <div class="stat"><small>Utilidad estimada</small><strong id="globalCashProfit">Bs 0,00</strong><small>Suma de la utilidad estimada de todas las órdenes</small></div>
+ </div>
+ <div class="muted" id="globalCashBreakdown" style="margin-top:12px"></div>
+ <p class="notice" style="margin-top:12px">Este cálculo suma el anticipo registrado en cada orden y descuenta únicamente los renglones marcados como pagados. Los pagos parciales adicionales a un anticipo deben estar registrados en el campo de anticipo de su orden para que se reflejen aquí.</p>
+</div>
 </section>
 <section id="reportes" class="panel">
 <div class="card"><h2>Reporte mensual de pedidos</h2><p class="muted">Se agrupan por fecha de creación de la orden.</p><div class="grid"><div class="field"><label>Mes</label><select id="reportMonth"></select></div><div class="field"><label>Año</label><select id="reportYear"></select></div></div><div class="actions"><button class="primary" id="generateReportPdf" type="button">Guardar como PDF</button><button class="secondary" id="copyReportText" type="button">Copiar texto</button></div><div class="statgrid"><div class="stat"><small>Pedidos realizados</small><strong id="reportOrders">0</strong></div><div class="stat"><small>Venta total</small><strong id="reportSales">Bs 0,00</strong></div><div class="stat"><small>Costo total</small><strong id="reportCosts">Bs 0,00</strong></div><div class="stat"><small>Utilidad total</small><strong id="reportProfit">Bs 0,00</strong></div></div><hr><h3>Vista previa del reporte para WhatsApp</h3><p class="muted">Puedes revisar el contenido, copiarlo y pegarlo directamente en una conversación.</p><div class="field"><label>Reporte en texto</label><textarea id="reportTextPreview" rows="12" readonly style="width:100%;resize:vertical"></textarea></div><hr><h3>Detalle de pedidos</h3><div id="reportDetails" class="empty">No hay pedidos en este período.</div></div>
@@ -279,10 +321,16 @@ footer{color:var(--muted);font-size:11px;text-align:center;padding:12px}
 </div>
 <div class="card"><h2>Sobre tus datos</h2><p class="muted">Este prototipo no transmite los datos a un servidor. La copia JSON no está cifrada: no la compartas por canales públicos.</p></div>
 </section>
-<footer>Confección Pro 1.33 · Base local IndexedDB · Producción, entregas y reportes</footer>
+<footer>Confección Pro 1.45 · Base local IndexedDB · Producción, entregas y reportes</footer>
 </main>
 <script>
 const $=id=>document.getElementById(id);
+// Identificador compatible con navegadores Android que no implementan createId().
+function createId(){
+  try{if(window.crypto&&typeof window.crypto.randomUUID==='function')return window.crypto.randomUUID();}catch(e){}
+  try{if(window.crypto&&typeof window.crypto.getRandomValues==='function'){const b=new Uint8Array(16);window.crypto.getRandomValues(b);b[6]=(b[6]&15)|64;b[8]=(b[8]&63)|128;const h=Array.from(b,x=>x.toString(16).padStart(2,'0')).join('');return h.slice(0,8)+'-'+h.slice(8,12)+'-'+h.slice(12,16)+'-'+h.slice(16,20)+'-'+h.slice(20);}}catch(e){}
+  return 'cp-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+'-'+Math.random().toString(36).slice(2);
+}
 const STORAGE_KEYS=['cp_clients','cp_orders','cp_materials','cp_labor','cp_holidays'];
 let cpDB=null;
 const load=k=>{try{return JSON.parse(localStorage.getItem(k)||'[]')}catch{return []}};
@@ -378,7 +426,7 @@ async function initializeLocalDatabase(){
   console.error(err);
  }
 }
-let clients=load('cp_clients'),orders=load('cp_orders'),materials=load('cp_materials'),laborItems=load('cp_labor'),holidays=load('cp_holidays'),costRows=[],editingOrderId=null,orderImages=[],productImages=[];
+let clients=load('cp_clients'),orders=load('cp_orders'),materials=load('cp_materials'),laborItems=load('cp_labor'),holidays=load('cp_holidays'),costRows=[],unexpectedRows=[],editingOrderId=null,editingClientId=null,orderImages=[],productImages=[];
 let productDrafts=[],activeProductIndex=0;
 const money=n=>'Bs '+Number(n||0).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2});
 const safe=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -408,18 +456,18 @@ $('confirmCatalogPicker').onclick=()=>{
  if(activeCatalogPickerType==='material'){
   const ids=[...document.querySelectorAll('[data-modal-material]:checked')].map(x=>x.dataset.modalMaterial);
   if(!ids.length)return alert('Marca uno o más materiales.');
-  ids.forEach(id=>{const m=materials.find(x=>x.id===id);if(m)costRows.push({id:crypto.randomUUID(),type:'material',name:m.name,qty:Math.max(1,Math.floor(Number($('qty').value)||1)),unit:Number(m.price)||0,paid:false,materialId:m.id,catalogUnit:m.unit});});
+  ids.forEach(id=>{const m=materials.find(x=>x.id===id);if(m)costRows.push({id:createId(),type:'material',name:m.name,qty:Math.max(1,Math.floor(Number($('qty').value)||1)),unit:Number(m.price)||0,paid:false,materialId:m.id,catalogUnit:m.unit});});
  }else if(activeCatalogPickerType==='labor'){
   const ids=[...document.querySelectorAll('[data-modal-labor]:checked')].map(x=>x.dataset.modalLabor);
   if(!ids.length)return alert('Marca uno o más trabajos de mano de obra.');
-  ids.forEach(id=>{const m=laborItems.find(x=>x.id===id);if(m)costRows.push({id:crypto.randomUUID(),type:'labor',name:m.name,qty:m.unit==='metro'?1:Math.max(1,Math.floor(Number($('qty').value)||1)),unit:Number(m.price)||0,paid:false,laborId:m.id,catalogUnit:m.unit});});
+  ids.forEach(id=>{const m=laborItems.find(x=>x.id===id);if(m)costRows.push({id:createId(),type:'labor',name:m.name,qty:m.unit==='metro'?1:Math.max(1,Math.floor(Number($('qty').value)||1)),unit:Number(m.price)||0,paid:false,laborId:m.id,catalogUnit:m.unit});});
  }
  renderCostRows();closeCatalogPicker();
 };
 function addCostRow(type='material',name='',qty=null,unit=0){
  const defaultQty=Math.max(1,Math.floor(Number($('qty').value)||1));
  const initialQty=qty===null?defaultQty:qty;
- const id=crypto.randomUUID();costRows.push({id,type,name,qty:initialQty,unit,paid:false});
+ const id=createId();costRows.push({id,type,name,qty:initialQty,unit,paid:false});
  renderCostRows();
 }
 function renderCostRows(){
@@ -466,14 +514,14 @@ function calcData(){
  const indirect=costRows.filter(r=>r.type==='indirect').reduce((s,r)=>s+r.qty*r.unit,0);
  const waste=0;
  const baseCost=direct+labor+indirect;
- const contingency=window.cpContingencyManual?Math.max(0,Number($('contingencyAmount').value)||0):baseCost*0.10;
+ const contingency=getUnexpectedSpent();
  const cost=baseCost+contingency;
  const price=Math.max(0,Number($('unitPrice').value)||0),sale=qty*price;
  return {qty,direct,labor,indirect,waste,baseCost,contingency,cost,unitCost:cost/qty,price,sale,profit:sale-cost,unitProfit:(sale-cost)/qty,margin:sale?((sale-cost)/sale*100):0};
 }
-function calculate(){const d=calcData();if(!window.cpContingencyManual)$('contingencyAmount').value=d.contingency.toFixed(2);document.querySelectorAll('#costLines .line').forEach(el=>{const r=costRows.find(x=>x.id===el.dataset.id);const sub=el.querySelector('input[disabled]');if(r&&sub)sub.value=money(r.qty*r.unit);});$('directSum').textContent=money(d.direct);$('laborSum').textContent=money(d.labor);$('indirectSum').textContent=money(d.indirect);$('totalCost').textContent=money(d.cost);$('unitCost').textContent=money(d.unitCost);$('unitProfit').textContent=money(d.unitProfit);$('totalSale').textContent=money(d.sale);$('totalProfit').textContent=money(d.profit);$('margin').textContent=d.margin.toFixed(1)+'%';}
+function calculate(){const d=calcData();if(!window.cpContingencyManual)window.cpContingencyBudget=d.contingency;document.querySelectorAll('#costLines .line').forEach(el=>{const r=costRows.find(x=>x.id===el.dataset.id);const sub=el.querySelector('input[disabled]');if(r&&sub)sub.value=money(r.qty*r.unit);});$('directSum').textContent=money(d.direct);$('laborSum').textContent=money(d.labor);$('indirectSum').textContent=money(d.indirect);$('totalCost').textContent=money(d.cost);$('unitCost').textContent=money(d.unitCost);$('unitProfit').textContent=money(d.unitProfit);$('totalSale').textContent=money(d.sale);$('totalProfit').textContent=money(d.profit);$('margin').textContent=d.margin.toFixed(1)+'%';renderUnexpectedRows();}
 ['qty','unitPrice'].forEach(id=>$(id).addEventListener('input',calculate));
-$('contingencyAmount').addEventListener('input',()=>{window.cpContingencyManual=true;calculate();});
+$('contingencyAmount').addEventListener('input',()=>{window.cpContingencyManual=true;window.cpContingencyBudget=Math.max(0,Number($('contingencyAmount').value)||0)+getUnexpectedSpent();calculate();renderUnexpectedRows();});
 $('addMaterial').onclick=()=>openCatalogPicker('material');$('addConsumable').onclick=()=>addCostRow('consumable');$('addLabor').onclick=()=>openCatalogPicker('labor');$('addIndirect').onclick=()=>addCostRow('indirect');
 function refreshClients(){
  const active=clients.filter(c=>c.active!==false);
@@ -490,6 +538,33 @@ function refreshMaterials(){
  renderMultiCatalogPickers();const active=materials.filter(m=>m.active!==false);
  $('materialsList').innerHTML=active.length?active.map(m=>`<div class="item itemtop"><div><strong>${safe(m.name)}</strong><div class="muted">${safe(m.unit)}</div></div><div style="text-align:right"><strong>${money(m.price)}</strong><div class="actions"><button class="secondary small" type="button" onclick="editMaterial('${m.id}')">Modificar</button><button class="danger small" type="button" onclick="deleteMaterial('${m.id}')">Eliminar</button></div></div></div>`).join(''):'<div class="empty">Todavía no hay materiales activos.</div>';
 }
+function refreshGlobalCashSummary(){
+ const received=orders.reduce((sum,o)=>sum+(Number(o.advance)||0),0);
+ const totalCosts=orders.reduce((sum,o)=>sum+(Number(o.cost)||0),0);
+ const totalProfit=orders.reduce((sum,o)=>sum+(Number(o.profit)||0),0);
+ let paid=0,paidMaterials=0,paidLabor=0,paidOther=0;
+ orders.forEach(o=>{
+  // costDetails es el consolidado de los productos de la orden; usarlo una sola vez evita duplicar importes.
+  const rows=Array.isArray(o.costDetails)&&o.costDetails.length?o.costDetails:(Array.isArray(o.products)?o.products.flatMap(p=>Array.isArray(p.costDetails)?p.costDetails:[]):[]);
+  rows.forEach(r=>{
+   if(!r||r.paid!==true)return;
+   const amount=(Number(r.qty)||0)*(Number(r.unit)||0);
+   paid+=amount;
+   if(r.type==='material'||r.type==='consumable')paidMaterials+=amount;
+   else if(r.type==='labor')paidLabor+=amount;
+   else paidOther+=amount;
+  });
+ });
+ // Saldo para continuar: costos totales presupuestados de todas las órdenes menos lo que ya se pagó.
+ const available=totalCosts-paid;
+ const set=(id,value)=>{const el=$(id);if(el)el.textContent=money(value);};
+ set('globalCashReceived',received);set('globalCashPaid',paid);set('globalCashAvailable',available);set('globalCashProfit',totalProfit);
+ const availableEl=$('globalCashAvailable');if(availableEl)availableEl.style.color=available<0?'#b91c1c':'#15803d';
+ const profitEl=$('globalCashProfit');if(profitEl)profitEl.style.color=totalProfit<0?'#b91c1c':'#15803d';
+ const breakdown=$('globalCashBreakdown');
+ if(breakdown)breakdown.textContent=`Costos totales de todas las órdenes: ${money(totalCosts)} · Gastos pagados: materiales y consumibles ${money(paidMaterials)} · mano de obra ${money(paidLabor)} · otros ${money(paidOther)}.`;
+}
+
 function refreshOrders(){
  $('ordersList').innerHTML=orders.length?orders.slice().reverse().map(o=>{
   const impre=Number(o.contingency??(Number(o.cost||0)-Number(o.baseCost||o.cost||0)));
@@ -501,12 +576,47 @@ function refreshOrders(){
    <div class="order-metrics"><div><small>Venta total</small><b>${money(o.sale)}</b></div><div><small>Costo total</small><b>${money(o.cost)}</b></div><div class="profit"><small>Utilidad estimada</small><b>${money(o.profit)}</b></div></div>
    <div class="order-pay"><span>Anticipo <b>${money(o.advance)}</b></span><span>Saldo <b>${money(Number(o.sale||0)-Number(o.advance||0))}</b></span></div>
    ${(o.images||[]).length?`<div class="order-photos">${o.images.map(src=>`<img src="${src}" alt="Fotografía del pedido" loading="lazy">`).join('')}</div>`:''}
-   ${o.costDetails?.length?(()=>{const rows=o.costDetails;const paid=rows.filter(r=>r.paid).length;const paidValue=rows.filter(r=>r.paid).reduce((s,r)=>s+(Number(r.qty)||0)*(Number(r.unit)||0),0);const pendingValue=rows.filter(r=>!r.paid).reduce((s,r)=>s+(Number(r.qty)||0)*(Number(r.unit)||0),0);return `<div class="purchase-progress"><div class="purchase-count"><span>Compras y pagos</span><strong>${paid} de ${rows.length} pagados</strong></div><div class="purchase-amount is-paid"><small>Total pagado</small><b>${money(paidValue)}</b></div><div class="purchase-amount"><small>Pendiente de pago</small><b>${money(pendingValue)}</b></div></div><details class="cost-details"><summary>Ver desglose y actualizar pagos</summary><div class="detail-list">${rows.map((r,i)=>`<div class="paid-row"><span>${safe(r.name)} <small>${r.qty} × ${money(r.unit)}</small></span><div><span class="paid-status ${r.paid?'yes':'no'}">${r.paid?'Pagado':'Pendiente'}</span><b>${money(r.qty*r.unit)}</b><input aria-label="Marcar ${safe(r.name)} como pagado" type="checkbox" ${r.paid?'checked':''} onchange="toggleCostPaid('${o.id}',${i},this.checked)"></div></div>`).join('')}<div class="cost-extra"><div><span>Imprevistos (10%)</span><b>${money(impre)}</b></div></div></div></details>`;})():''}
+   ${o.costDetails?.length?(()=>{const rows=o.costDetails;const paid=rows.filter(r=>r.paid).length;const paidValue=rows.filter(r=>r.paid).reduce((s,r)=>s+(Number(r.qty)||0)*(Number(r.unit)||0),0);const pendingValue=rows.filter(r=>!r.paid).reduce((s,r)=>s+(Number(r.qty)||0)*(Number(r.unit)||0),0);return `<div class="purchase-progress"><div class="purchase-count"><span>Compras y pagos</span><strong>${paid} de ${rows.length} pagados</strong></div><div class="purchase-amount is-paid"><small>Total pagado</small><b>${money(paidValue)}</b></div><div class="purchase-amount"><small>Pendiente de pago</small><b>${money(pendingValue)}</b></div></div><details class="cost-details"><summary>Ver desglose y actualizar pagos</summary><div class="detail-list">${rows.map((r,i)=>`<div class="paid-row"><span>${safe(r.name)} <small>${r.qty} × ${money(r.unit)}</small></span><div><span class="paid-status ${r.paid?'yes':'no'}">${r.paid?'Pagado':'Pendiente'}</span><b>${money(r.qty*r.unit)}</b><input aria-label="Marcar ${safe(r.name)} como pagado" type="checkbox" ${r.paid?'checked':''} onchange="toggleCostPaid('${o.id}',${i},this.checked,this)"></div></div>`).join('')}<div class="cost-extra"><div><span>Imprevistos (10%)</span><b>${money(impre)}</b></div></div></div></details>`;})():''}
    <div class="actions order-actions"><button class="secondary small" onclick="editOrder('${o.id}')">Editar</button><button class="danger small" onclick="deleteOrder('${o.id}')">Eliminar</button></div>
   </article>`;
  }).join(''):'<div class="empty">Todavía no hay órdenes.</div>';
+ refreshGlobalCashSummary();
 }
-window.toggleCostPaid=(orderId,index,checked)=>{const order=orders.find(x=>x.id===orderId);if(!order||!order.costDetails||!order.costDetails[index])return;order.costDetails[index].paid=!!checked;if(Array.isArray(order.products)){let offset=0;for(const p of order.products){const rows=p.costDetails||[];if(index>=offset&&index<offset+rows.length){rows[index-offset].paid=!!checked;break;}offset+=rows.length;}}order.updated=new Date().toISOString();save('cp_orders',orders);refreshOrders();};
+window.toggleCostPaid=(orderId,index,checked,input)=>{
+ const order=orders.find(x=>x.id===orderId);if(!order||!Array.isArray(order.costDetails)||!order.costDetails[index])return;
+ order.costDetails[index].paid=!!checked;
+ if(Array.isArray(order.products)){
+  let offset=0;
+  for(const p of order.products){
+   const rows=p.costDetails||[];
+   if(index>=offset&&index<offset+rows.length){rows[index-offset].paid=!!checked;break;}
+   offset+=rows.length;
+  }
+ }
+ order.updated=new Date().toISOString();save('cp_orders',orders);
+ // Update only the changed row and the payment totals. Do not rebuild the order card:
+ // keeping the DOM intact lets the user check/uncheck several rows in one pass.
+ if(input){
+  const row=input.closest('.paid-row');
+  if(row){
+   const status=row.querySelector('.paid-status');
+   if(status){status.textContent=checked?'Pagado':'Pendiente';status.classList.toggle('yes',!!checked);status.classList.toggle('no',!checked);}
+  }
+  const card=input.closest('.order-card');
+  if(card){
+   const rows=order.costDetails;
+   const paidRows=rows.filter(r=>r.paid===true);
+   const paidValue=paidRows.reduce((s,r)=>s+(Number(r.qty)||0)*(Number(r.unit)||0),0);
+   const pendingValue=rows.filter(r=>r.paid!==true).reduce((s,r)=>s+(Number(r.qty)||0)*(Number(r.unit)||0),0);
+   const count=card.querySelector('.purchase-count strong');
+   const amounts=card.querySelectorAll('.purchase-amount b');
+   if(count)count.textContent=paidRows.length+' de '+rows.length+' pagados';
+   if(amounts[0])amounts[0].textContent=money(paidValue);
+   if(amounts[1])amounts[1].textContent=money(pendingValue);
+  }
+ }
+ refreshGlobalCashSummary();
+};
 function renderOrderImagePreview(){
  $('orderImagePreview').innerHTML=orderImages.map((src,i)=>`<div class="image-thumb"><img src="${src}" alt="Imagen ${i+1}"><button type="button" aria-label="Quitar imagen" onclick="removeOrderImage(${i})">×</button></div>`).join('');
  $('orderImages').disabled=orderImages.length>=3;
@@ -596,19 +706,19 @@ function resetClientForm(){editingClientId=null;$('clientName').value='';$('clie
 window.editClient=id=>{const c=clients.find(x=>x.id===id);if(!c)return;editingClientId=id;$('clientName').value=c.name||'';$('clientPhone').value=c.phone||'';$('clientSource').value=c.source||'';$('saveClient').textContent='Guardar cambios';$('cancelClientEdit').hidden=false;document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab==='clientes'));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='clientes'));window.scrollTo({top:0,behavior:'smooth'});};
 window.deleteClient=id=>{const c=clients.find(x=>x.id===id);if(!c)return;if(!confirm(`¿Eliminar a ${c.name} de los clientes activos? Las órdenes conservarán sus datos históricos.`))return;c.active=false;orders=orders.map(o=>((o.clientId===id)||(!o.clientId&&o.clientName===c.name))?{...o,clientId:o.clientId||id,clientSnapshot:o.clientSnapshot||{id,name:c.name,phone:c.phone||'',source:c.source||''}}:o);save('cp_clients',clients);save('cp_orders',orders);if(editingClientId===id)resetClientForm();refreshClients();};
 $('cancelClientEdit').onclick=resetClientForm;
-$('saveClient').onclick=()=>{let name=$('clientName').value.trim();if(!name)return alert('Escribe el nombre del cliente.');const phone=$('clientPhone').value.trim(),source=$('clientSource').value;if(editingClientId){const old=clients.find(c=>c.id===editingClientId);if(!old)return resetClientForm();clients=clients.map(c=>c.id===editingClientId?{...c,name,phone,source,active:true}:c);}else{clients.push({id:crypto.randomUUID(),name,phone,source,active:true});}const wasEditing=!!editingClientId;save('cp_clients',clients);resetClientForm();refreshClients();alert(wasEditing?'Datos del cliente actualizados. Las órdenes anteriores conservan sus datos.':'Cliente guardado.');};
+$('saveClient').onclick=()=>{let name=$('clientName').value.trim();if(!name)return alert('Escribe el nombre del cliente.');const phone=$('clientPhone').value.trim(),source=$('clientSource').value;if(editingClientId){const old=clients.find(c=>c.id===editingClientId);if(!old)return resetClientForm();clients=clients.map(c=>c.id===editingClientId?{...c,name,phone,source,active:true}:c);}else{clients.push({id:createId(),name,phone,source,active:true});}const wasEditing=!!editingClientId;save('cp_clients',clients);resetClientForm();refreshClients();alert(wasEditing?'Datos del cliente actualizados. Las órdenes anteriores conservan sus datos.':'Cliente guardado.');};
 
 let editingMaterialId=null,editingLaborId=null;
 function resetMaterialForm(){editingMaterialId=null;$('materialName').value='';$('materialPrice').value='';$('materialUnit').value='metro';$('saveMaterial').textContent='Guardar material';$('cancelMaterialEdit').hidden=true;}
 window.editMaterial=id=>{const m=materials.find(x=>x.id===id);if(!m)return;editingMaterialId=id;$('materialName').value=m.name||'';$('materialUnit').value=m.unit||'metro';$('materialPrice').value=m.price??0;$('saveMaterial').textContent='Guardar cambios';$('cancelMaterialEdit').hidden=false;window.scrollTo({top:0,behavior:'smooth'});};
 window.deleteMaterial=id=>{const m=materials.find(x=>x.id===id);if(!m)return;if(!confirm(`¿Eliminar “${m.name}” del catálogo? Las órdenes existentes conservarán el material y su precio registrado.`))return;m.active=false;save('cp_materials',materials);if(editingMaterialId===id)resetMaterialForm();refreshMaterials();};
 $('cancelMaterialEdit').onclick=resetMaterialForm;
-$('saveMaterial').onclick=()=>{const name=$('materialName').value.trim(),price=Number($('materialPrice').value),unit=$('materialUnit').value;if(!name||!Number.isFinite(price)||price<0)return alert('Completa el material y un precio válido.');if(editingMaterialId){materials=materials.map(m=>m.id===editingMaterialId?{...m,name,unit,price,active:true}:m);}else materials.push({id:crypto.randomUUID(),name,unit,price,active:true});const wasEditing=!!editingMaterialId;save('cp_materials',materials);resetMaterialForm();refreshMaterials();alert(wasEditing?'Material actualizado. Las órdenes anteriores conservan sus datos.':'Material guardado.');};
+$('saveMaterial').onclick=()=>{const name=$('materialName').value.trim(),price=Number($('materialPrice').value),unit=$('materialUnit').value;if(!name||!Number.isFinite(price)||price<0)return alert('Completa el material y un precio válido.');if(editingMaterialId){materials=materials.map(m=>m.id===editingMaterialId?{...m,name,unit,price,active:true}:m);}else materials.push({id:createId(),name,unit,price,active:true});const wasEditing=!!editingMaterialId;save('cp_materials',materials);resetMaterialForm();refreshMaterials();alert(wasEditing?'Material actualizado. Las órdenes anteriores conservan sus datos.':'Material guardado.');};
 function resetLaborForm(){editingLaborId=null;$('laborName').value='';$('laborPrice').value='';$('laborUnit').value='unidad';$('saveLaborItem').textContent='Guardar mano de obra';$('cancelLaborEdit').hidden=true;}
 window.editLabor=id=>{const m=laborItems.find(x=>x.id===id);if(!m)return;editingLaborId=id;$('laborName').value=m.name||'';$('laborUnit').value=m.unit||'unidad';$('laborPrice').value=m.price??0;$('saveLaborItem').textContent='Guardar cambios';$('cancelLaborEdit').hidden=false;window.scrollTo({top:0,behavior:'smooth'});};
 window.deleteLabor=id=>{const m=laborItems.find(x=>x.id===id);if(!m)return;if(!confirm(`¿Eliminar “${m.name}” del catálogo? Las órdenes existentes conservarán el servicio y su precio registrado.`))return;m.active=false;save('cp_labor',laborItems);if(editingLaborId===id)resetLaborForm();refreshLabor();};
 $('cancelLaborEdit').onclick=resetLaborForm;
-$('saveLaborItem').onclick=()=>{const name=$('laborName').value.trim(),price=Number($('laborPrice').value),unit=$('laborUnit').value;if(!name||!Number.isFinite(price)||price<0)return alert('Completa el trabajo y un precio válido.');if(editingLaborId){laborItems=laborItems.map(m=>m.id===editingLaborId?{...m,name,unit,price,active:true}:m);}else laborItems.push({id:crypto.randomUUID(),name,unit,price,active:true});const wasEditing=!!editingLaborId;save('cp_labor',laborItems);resetLaborForm();refreshLabor();alert(wasEditing?'Mano de obra actualizada. Las órdenes anteriores conservan sus datos.':'Mano de obra guardada.');};
+$('saveLaborItem').onclick=()=>{const name=$('laborName').value.trim(),price=Number($('laborPrice').value),unit=$('laborUnit').value;if(!name||!Number.isFinite(price)||price<0)return alert('Completa el trabajo y un precio válido.');if(editingLaborId){laborItems=laborItems.map(m=>m.id===editingLaborId?{...m,name,unit,price,active:true}:m);}else laborItems.push({id:createId(),name,unit,price,active:true});const wasEditing=!!editingLaborId;save('cp_labor',laborItems);resetLaborForm();refreshLabor();alert(wasEditing?'Mano de obra actualizada. Las órdenes anteriores conservan sus datos.':'Mano de obra guardada.');};
 
 
 
@@ -680,14 +790,37 @@ $('businessDays').addEventListener('input',updateDueDate);
 
 
 const productionStates=['Pendiente de iniciar','En producción','En terminación','Listo para entregar','Entregada'];
+function getUnexpectedSpent(){return unexpectedRows.reduce((a,r)=>a+(Number(r.amount)||0),0);}
+function getContingencyBudget(){
+ if(!window.cpContingencyManual){
+  const base=costRows.filter(r=>['material','consumable','labor','indirect'].includes(r.type)).reduce((s,r)=>s+r.qty*r.unit,0);
+  window.cpContingencyBudget=base*0.10;
+ }
+ return Math.max(0,Number(window.cpContingencyBudget)||0);
+}
+function renderUnexpectedRows(){
+ const list=$('unexpectedList');if(!list)return;
+ const budget=getContingencyBudget(),spent=getUnexpectedSpent(),remaining=budget-spent;
+ $('contingencyAmount').value=Math.max(0,remaining).toFixed(2);
+ $('contingencyAmount').classList.toggle('over-budget',remaining<0);
+ list.innerHTML=unexpectedRows.length?unexpectedRows.map((r,i)=>`<div class="unexpected-item"><div class="unexpected-item-info"><b>${safe(r.description)}</b><div class="muted">${money(r.amount)}</div></div><div class="unexpected-item-actions"><button class="danger small" type="button" aria-label="Eliminar imprevisto" onclick="removeUnexpected(${i})">×</button></div></div>`).join(''):'<span class="muted">Todavía no hay imprevistos registrados.</span>';
+}
+window.removeUnexpected=i=>{if(!unexpectedRows[i])return;if(!confirm('¿Eliminar este imprevisto?'))return;unexpectedRows.splice(i,1);renderUnexpectedRows();calculate();};
+$('addUnexpected').onclick=()=>{
+ const description=prompt('Describe el imprevisto:');if(!description||!description.trim())return;
+ const amount=Number(prompt('¿Cuánto costó en Bs?','0'));
+ if(!Number.isFinite(amount)||amount<=0)return alert('Ingresa un importe mayor a cero.');
+ unexpectedRows.push({id:createId(),description:description.trim(),amount,date:isoDateLocal(new Date())});
+ calculate();
+};
 function snapshotCurrentProduct(){
  const d=calcData();
- return {name:$('product').value.trim(),qty:d.qty,unitPrice:d.price,unitCost:d.unitCost,unitProfit:d.unitProfit,cost:d.cost,baseCost:d.baseCost,contingency:d.contingency,contingencyManual:!!window.cpContingencyManual,sale:d.sale,profit:d.profit,margin:d.margin,costDetails:costRows.map(r=>({...r})),images:productImages.slice(0,4),status:productDrafts[activeProductIndex]?.status||'Pendiente de iniciar'};
+ return {name:$('product').value.trim(),qty:d.qty,unitPrice:d.price,unitCost:d.unitCost,unitProfit:d.unitProfit,cost:d.cost,baseCost:d.baseCost,contingency:d.contingency,contingencyBudget:getContingencyBudget(),contingencyManual:!!window.cpContingencyManual,unexpectedRows:unexpectedRows.map(r=>({...r})),sale:d.sale,profit:d.profit,margin:d.margin,costDetails:costRows.map(r=>({...r})),images:productImages.slice(0,4),status:productDrafts[activeProductIndex]?.status||'Pendiente de iniciar'};
 }
 function loadProductIntoEditor(p){
  productImages=Array.isArray(p.images)?p.images.slice(0,4):[];renderProductImagePreview();
  $('product').value=p.name||'';$('qty').value=p.qty||1;$('unitPrice').value=p.unitPrice||0;
- costRows=(p.costDetails||[]).map(r=>({...r,id:crypto.randomUUID()}));window.cpContingencyManual=!!p.contingencyManual;$('contingencyAmount').value=window.cpContingencyManual?(p.contingency??0):'';
+ costRows=(p.costDetails||[]).map(r=>({...r,id:createId()}));unexpectedRows=Array.isArray(p.unexpectedRows)?p.unexpectedRows.map(r=>({...r})):[];window.cpContingencyManual=!!p.contingencyManual;window.cpContingencyBudget=Number(p.contingencyBudget??p.contingency)||0;renderUnexpectedRows();
  renderCostRows();calculate();
 }
 function saveActiveProductDraft(){
@@ -706,7 +839,7 @@ window.selectOrderProduct=i=>{
 };
 window.removeOrderProduct=i=>{
  if(!confirm('¿Quitar este producto de la orden?'))return;
- if(i===activeProductIndex){productDrafts.splice(i,1);activeProductIndex=Math.max(0,Math.min(i,productDrafts.length-1));if(productDrafts[activeProductIndex])loadProductIntoEditor(productDrafts[activeProductIndex]);else{ $('product').value='';$('qty').value=1;$('unitPrice').value=0;productImages=[];renderProductImagePreview();costRows=[];renderCostRows();calculate();}}
+ if(i===activeProductIndex){productDrafts.splice(i,1);activeProductIndex=Math.max(0,Math.min(i,productDrafts.length-1));if(productDrafts[activeProductIndex])loadProductIntoEditor(productDrafts[activeProductIndex]);else{ $('product').value='';$('qty').value=1;$('unitPrice').value=0;productImages=[];renderProductImagePreview();costRows=[];unexpectedRows=[];renderUnexpectedRows();renderCostRows();calculate();}}
  else productDrafts.splice(i,1);
  if(activeProductIndex>=productDrafts.length)activeProductIndex=Math.max(0,productDrafts.length-1);
  renderOrderProductsList();
@@ -720,10 +853,10 @@ $('addOrderProduct').onclick=()=>{
 };
 
 function resetOrderForm(){
- editingOrderId=null;productDrafts=[];activeProductIndex=0;renderOrderProductsList();orderImages=[];productImages=[];renderProductImagePreview();window.cpContingencyManual=false;$('contingencyAmount').value='';
+ editingOrderId=null;productDrafts=[];activeProductIndex=0;window.cpContingencyBudget=0;renderOrderProductsList();orderImages=[];productImages=[];renderProductImagePreview();window.cpContingencyManual=false;window.cpContingencyBudget=0;$('contingencyAmount').value='';
  $('orderClient').value='';$('product').value='';$('qty').value='1';$('unitPrice').value='0';
  $('advance').value='0';$('dueDate').value='';$('dueMode').value='manual';$('startDate').value=isoDateLocal(new Date());$('businessDays').value='10';$('notes').value='';updateDueDate();
- costRows=[];renderCostRows();$('saveOrder').textContent='Guardar orden';$('cancelEdit').hidden=true;calculate();
+ costRows=[];unexpectedRows=[];renderUnexpectedRows();renderCostRows();$('saveOrder').textContent='Guardar orden';$('cancelEdit').hidden=true;calculate();
 }
 window.editOrder=id=>{
  const o=orders.find(x=>x.id===id);if(!o)return;
@@ -757,9 +890,9 @@ $('saveOrder').onclick=async()=>{
  const advance=Math.max(0,Number($('advance').value)||0);
  if(advance>sale)return alert('El anticipo no puede superar la venta total de la orden.');
  const aggregateStatus=products.every(p=>p.status==='Entregada')?'Entregada':products.every(p=>p.status===products[0].status)?products[0].status:'Producción mixta';
- const order={...(old||{}),id:editingOrderId||crypto.randomUUID(),clientId:selectedClientId,clientName:historicalClient?.name||client?.name||old?.clientName,clientSnapshot:historicalClient||{id:client.id,name:client.name,phone:client.phone||'',source:client.source||''},product:products.map(p=>p.name).join(' + '),qty,unitCost:qty?cost/qty:0,unitProfit:qty?(sale-cost)/qty:0,unitPrice:qty?sale/qty:0,cost,baseCost:products.reduce((s,p)=>s+(Number(p.baseCost)||0),0),contingency:products.reduce((s,p)=>s+(Number(p.contingency)||0),0),sale,profit:sale-cost,margin:sale?((sale-cost)/sale*100):0,advance,due:$('dueDate').value,dueMode:$('dueMode').value,startDate:$('startDate').value,businessDays:Number($('businessDays').value)||null,notes:$('notes').value,images:orderImages.slice(0,3),status:aggregateStatus,products,created:old?.created||new Date().toISOString(),createdDate:old?.createdDate||isoDateLocal(new Date()),updated:new Date().toISOString(),costDetails:products.flatMap(p=>p.costDetails||[]),waste:0,wastePct:0};
+ const order={...(old||{}),id:editingOrderId||createId(),clientId:selectedClientId,clientName:historicalClient?.name||client?.name||old?.clientName,clientSnapshot:historicalClient||{id:client.id,name:client.name,phone:client.phone||'',source:client.source||''},product:products.map(p=>p.name).join(' + '),qty,unitCost:qty?cost/qty:0,unitProfit:qty?(sale-cost)/qty:0,unitPrice:qty?sale/qty:0,cost,baseCost:products.reduce((s,p)=>s+(Number(p.baseCost)||0),0),contingency:products.reduce((s,p)=>s+(Number(p.contingency)||0),0),sale,profit:sale-cost,margin:sale?((sale-cost)/sale*100):0,advance,due:$('dueDate').value,dueMode:$('dueMode').value,startDate:$('startDate').value,businessDays:Number($('businessDays').value)||null,notes:$('notes').value,images:orderImages.slice(0,3),status:aggregateStatus,products,created:old?.created||new Date().toISOString(),createdDate:old?.createdDate||isoDateLocal(new Date()),updated:new Date().toISOString(),costDetails:products.flatMap(p=>[...(p.costDetails||[]),...(p.unexpectedRows||[]).map(r=>({id:r.id,type:'unexpected',name:'Imprevisto: '+r.description,qty:1,unit:Number(r.amount)||0,paid:true,date:r.date}))]),waste:0,wastePct:0};
  if(editingOrderId)orders=orders.map(x=>x.id===editingOrderId?order:x);else orders.push(order);
- save('cp_orders',orders);resetOrderForm();refreshOrders();refreshStats();alert(old?'Cambios de la orden guardados.':'Orden guardada.');
+ save('cp_orders',orders);resetOrderForm();refreshOrders();refreshStats();refreshGlobalCashSummary();alert(old?'Cambios de la orden guardados.':'Orden guardada.');
 };
 window.updateOrderProductStatus=(id,index,status)=>{if(!productionStates.includes(status))return;const o=orders.find(x=>x.id===id);if(!o)return;if(!Array.isArray(o.products)||!o.products.length)o.products=[{name:o.product,qty:o.qty,status:o.status||'Pendiente de iniciar',unitPrice:o.unitPrice,cost:o.cost,sale:o.sale,profit:o.profit,costDetails:o.costDetails||[]}];if(!o.products[index])return;o.products[index].status=status;o.status=o.products.every(p=>p.status==='Entregada')?'Entregada':o.products.every(p=>p.status===o.products[0].status)?o.products[0].status:'Producción mixta';o.updated=new Date().toISOString();save('cp_orders',orders);refreshOrders();refreshStats();};
 window.updateOrderStatus=(id,status)=>{const o=orders.find(x=>x.id===id);if(!o)return;(o.products||[]).forEach(p=>p.status=status);o.status=status;save('cp_orders',orders);refreshOrders();refreshStats();};
