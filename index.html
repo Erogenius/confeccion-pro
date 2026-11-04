@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#172554">
 <meta name="description" content="Gestión local de órdenes y costos de confección">
-<link rel="manifest" href="manifest.webmanifest?v=152">
-<link rel="apple-touch-icon" sizes="192x192" href="icon-192.png?v=152">
+<link rel="manifest" href="manifest.webmanifest?v=160">
+<link rel="apple-touch-icon" sizes="192x192" href="icon-192.png?v=160">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Jipi Jailón Pro 1.52</title>
+<title>Jipi Jailón Pro 1.60</title>
 <style>
 :root{--navy:#172554;--blue:#2563eb;--bg:#f3f6fb;--card:#fff;--ink:#172033;--muted:#64748b;--line:#e2e8f0;--green:#15803d;--red:#b91c1c}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
@@ -172,10 +172,25 @@ footer{color:var(--muted);font-size:11px;text-align:center;padding:12px}
 #reportes .stat{padding:14px;min-height:82px}
 @media(max-width:390px){.app-header{gap:9px;padding-left:12px;padding-right:12px}.app-logo{width:50px;height:50px}.app-brand h1{font-size:17px}.app-brand p{font-size:10px}.app-version{font-size:10px;padding:4px 7px}}
 
+
+/* Lista de clientes: tarjetas alineadas y cómodas en móvil */
+#clientes #clientsList{display:grid;gap:10px}
+#clientes .client-entry{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px;border:1px solid var(--line);border-radius:13px;background:#fff;min-width:0}
+#clientes .client-details{flex:1;min-width:0;text-align:left}
+#clientes .client-details strong{display:block;color:var(--ink);font-size:15px;line-height:1.35;font-weight:700;overflow-wrap:anywhere}
+#clientes .client-meta{display:flex;flex-wrap:wrap;gap:3px 10px;margin-top:5px;color:var(--muted);font-size:12px;line-height:1.4;overflow-wrap:anywhere}
+#clientes .client-actions{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex:0 0 auto;margin:0}
+#clientes .client-actions button{white-space:nowrap;padding:9px 11px}
+@media(max-width:480px){
+ #clientes .client-entry{align-items:stretch;flex-direction:column;gap:11px;padding:13px}
+ #clientes .client-actions{display:grid;grid-template-columns:1fr 1fr;width:100%}
+ #clientes .client-actions button{width:100%;padding:9px 8px}
+}
+
 </style>
 </head>
 <body>
-<header class="app-header"><img class="app-logo" src="icon-192.png?v=152" alt="Jipi Jailón"><div class="app-brand"><h1>Jipi Jailón Pro</h1><p>Gestión de producción y costos · Bolivianos (Bs)</p></div><span class="app-version">v1.52</span></header>
+<header class="app-header"><img class="app-logo" src="icon-192.png?v=160" alt="Jipi Jailón"><div class="app-brand"><h1>Jipi Jailón Pro</h1><p>Gestión de producción y costos · Bolivianos (Bs)</p></div><span class="app-version">v1.60</span></header>
 <main>
 <div id="storageStatus" class="muted" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:9px 12px;margin:8px 0 12px">Preparando almacenamiento local…</div>
 
@@ -201,7 +216,7 @@ footer{color:var(--muted);font-size:11px;text-align:center;padding:12px}
 <div class="stat"><small>Costos estimados</small><strong id="statCosts">Bs 0,00</strong></div>
 <div class="stat"><small>Utilidad estimada</small><strong id="statProfit">Bs 0,00</strong></div>
 </div>
-<div class="card" style="margin-top:18px"><h2>Versión 1.52</h2>
+<div class="card" style="margin-top:18px"><h2>Versión 1.60</h2>
 <p class="muted">Gestiona clientes y órdenes, controla materiales y mano de obra, da seguimiento a la producción y las entregas, consulta reportes y administra tu base de datos local.</p>
 <div class="notice"><b>Almacenamiento local:</b> los datos permanecen en este navegador y dispositivo. Esta versión todavía no tiene cuentas, permisos, sincronización en la nube ni cifrado de servidor. Exporta respaldos periódicamente y utiliza solo datos de prueba hasta completar la seguridad.</div>
 </div>
@@ -240,7 +255,7 @@ footer{color:var(--muted);font-size:11px;text-align:center;padding:12px}
 <div class="field full"><label>Producto / descripción</label><input id="product" placeholder="Ej. 20 camisas institucionales"></div>
 <div class="field full"><label>Fotografías de este producto (máximo 4)</label><input id="productImages" type="file" accept="image/*" multiple><div class="muted">Cada producto puede tener hasta 4 fotografías. Se optimizan y se guardan en este dispositivo.</div><div id="productImagePreview" class="image-preview"></div></div>
 <div class="field"><label>Cantidad de unidades</label><input id="qty" type="number" min="1" step="1" value="1"></div>
- <div class="field"><label>Prendas regaladas</label><input id="giftQty" type="number" min="0" step="1" value="0"><div class="muted">No generan venta, pero sí cuentan en el costo de producción.</div></div>
+ <div class="field"><label>Prendas de obsequio</label><input id="giftQty" type="number" min="0" step="1" value="0"><div class="muted">No generan venta, pero sí cuentan en el costo de producción.</div></div>
 <div class="field"><label>Precio de venta por unidad (Bs)</label><input id="unitPrice" type="number" min="0" step="0.01" value="100"></div>
 
 
@@ -309,7 +324,10 @@ footer{color:var(--muted);font-size:11px;text-align:center;padding:12px}
 </div>
 </section>
 <section id="reportes" class="panel">
-<div class="card"><h2>Reporte mensual de pedidos</h2><p class="muted">Se agrupan por fecha de creación de la orden.</p><div class="grid"><div class="field"><label>Mes</label><select id="reportMonth"></select></div><div class="field"><label>Año</label><select id="reportYear"></select></div></div><div class="actions"><button class="primary" id="generateReportPdf" type="button">Guardar como PDF</button><button class="secondary" id="copyReportText" type="button">Copiar texto</button></div><div class="statgrid"><div class="stat"><small>Pedidos realizados</small><strong id="reportOrders">0</strong></div><div class="stat"><small>Venta total</small><strong id="reportSales">Bs 0,00</strong></div><div class="stat"><small>Costo total</small><strong id="reportCosts">Bs 0,00</strong></div><div class="stat"><small>Utilidad total</small><strong id="reportProfit">Bs 0,00</strong></div></div><hr><h3>Vista previa del reporte para WhatsApp</h3><p class="muted">Puedes revisar el contenido, copiarlo y pegarlo directamente en una conversación.</p><div class="field"><label>Reporte en texto</label><textarea id="reportTextPreview" rows="12" readonly style="width:100%;resize:vertical"></textarea></div><hr><h3>Detalle de pedidos</h3><div id="reportDetails" class="empty">No hay pedidos en este período.</div></div>
+<div class="card"><h2>Reportes</h2><div class="field"><label>Tipo de reporte</label><select id="reportType"><option value="monthly">Reporte mensual de pedidos</option><option value="workorders">Reporte general de órdenes de trabajo</option></select></div>
+<div id="monthlyReportPanel"><p class="muted">Se agrupan por fecha de creación de la orden.</p><div class="grid"><div class="field"><label>Mes</label><select id="reportMonth"></select></div><div class="field"><label>Año</label><select id="reportYear"></select></div></div><div class="statgrid"><div class="stat"><small>Pedidos realizados</small><strong id="reportOrders">0</strong></div><div class="stat"><small>Venta total</small><strong id="reportSales">Bs 0,00</strong></div><div class="stat"><small>Costo total</small><strong id="reportCosts">Bs 0,00</strong></div><div class="stat"><small>Utilidad total</small><strong id="reportProfit">Bs 0,00</strong></div></div><hr><h3>Detalle de pedidos</h3><div id="reportDetails" class="empty">No hay pedidos en este período.</div></div>
+<div id="workOrdersReportPanel" hidden><p class="muted">Consolidado de todas las órdenes registradas, sin filtro por fecha ni estado.</p><div class="statgrid"><div class="stat"><small>Órdenes</small><strong id="workOrderCount">0</strong></div><div class="stat"><small>Venta total</small><strong id="workOrderSales">Bs 0,00</strong></div><div class="stat"><small>Anticipos</small><strong id="workOrderAdvances">Bs 0,00</strong></div><div class="stat"><small>Prendas por producir</small><strong id="workOrderGarments">0</strong></div></div><div id="workOrdersReportDetails"></div></div>
+<hr><div class="actions"><button class="primary" id="generateReportPdf" type="button">Descargar / imprimir PDF</button><button class="secondary" id="copyReportText" type="button">Copiar texto</button></div><h3>Vista previa del reporte para WhatsApp</h3><p class="muted">Puedes revisar el contenido, copiarlo y pegarlo directamente en una conversación.</p><div class="field"><label>Reporte en texto</label><textarea id="reportTextPreview" rows="14" readonly style="width:100%;resize:vertical"></textarea></div></div>
 </section>
 <section id="clientes" class="panel">
 <div class="card"><h2>Registrar cliente</h2><div class="grid"><div class="field"><label>Nombre</label><input id="clientName" placeholder="Nombre del cliente"></div><div class="field"><label>Teléfono (opcional)</label><input id="clientPhone" placeholder="Teléfono"></div><div class="field full"><label>¿De dónde llegó el cliente?</label><select id="clientSource"><option value="">Seleccionar procedencia</option><option>TikTok</option><option>Facebook</option><option>Instagram</option><option>Redes sociales</option><option>Referido</option><option>Etiqueta de la prenda</option><option>WhatsApp</option><option>Otro</option></select></div></div><div class="actions"><button class="primary" id="saveClient">Guardar cliente</button><button class="secondary" id="cancelClientEdit" type="button" hidden>Cancelar edición</button></div></div>
@@ -358,7 +376,7 @@ footer{color:var(--muted);font-size:11px;text-align:center;padding:12px}
 </div>
 <div class="card"><h2>Sobre tus datos</h2><p class="muted">Este prototipo no transmite los datos a un servidor. La copia JSON no está cifrada: no la compartas por canales públicos.</p></div>
 </section>
-<footer>Jipi Jailón Pro v1.52 · Base local IndexedDB · Producción, entregas y reportes</footer>
+<footer>Jipi Jailón Pro v1.60 · Base local IndexedDB · Producción, entregas y reportes</footer>
 </main>
 <script>
 const $=id=>document.getElementById(id);
@@ -590,7 +608,7 @@ $('addMaterial').onclick=()=>openCatalogPicker('material');$('addConsumable').on
 function refreshClients(){
  const active=clients.filter(c=>c.active!==false);
  $('orderClient').innerHTML='<option value="">Selecciona cliente</option>'+active.map(c=>`<option value="${c.id}">${safe(c.name)}</option>`).join('');
- $('clientsList').innerHTML=active.length?active.map(c=>`<div class="item itemtop"><div><strong>${safe(c.name)}</strong><div class="muted">${safe(c.phone||'Sin teléfono')} · Procedencia: ${safe(c.source||'No especificada')}</div></div><div class="actions"><button class="secondary small" type="button" onclick="editClient('${c.id}')">Modificar</button><button class="danger small" type="button" onclick="deleteClient('${c.id}')">Eliminar</button></div></div>`).join(''):'<div class="empty">Todavía no hay clientes activos.</div>';
+ $('clientsList').innerHTML=active.length?active.map(c=>`<article class="client-entry"><div class="client-details"><strong>${safe(c.name)}</strong><div class="client-meta">${safe(c.phone||'Sin teléfono')}<span>Procedencia: ${safe(c.source||'No especificada')}</span></div></div><div class="client-actions"><button class="secondary small" type="button" onclick="editClient('${c.id}')">Modificar</button><button class="danger small" type="button" onclick="deleteClient('${c.id}')">Eliminar</button></div></article>`).join(''):'<div class="empty">Todavía no hay clientes activos.</div>';
 }
 
 
@@ -666,7 +684,7 @@ window.pdfOrderReport=id=>{
  const html=products.map((p,i)=>{const q=Number(p.qty)||0,g=Math.min(q,Number(p.giftedQty)||0),v=q-g,rows=(p.costDetails||[]).map(r=>`<tr><td>${reportEscape(r.name)}</td><td>${Number(r.qty)||0}</td><td>${money(r.unit)}</td><td>${money((Number(r.qty)||0)*(Number(r.unit)||0))}</td><td>${r.paid?'Pagado':'Pendiente'}</td></tr>`).join('');return `<section><h2>${i+1}. ${reportEscape(p.name||'Producto')}</h2><div class="stats"><div><small>Producidas</small><b>${q}</b></div><div><small>Regaladas</small><b>${g}</b></div><div><small>Vendibles</small><b>${v}</b></div><div><small>Venta</small><b>${money(p.sale)}</b></div></div><p>Costo: <b>${money(p.cost)}</b> · Utilidad: <b>${money(p.profit)}</b> · Estado: ${reportEscape(p.status||o.status||'Pendiente')}</p><table><thead><tr><th>Concepto</th><th>Cantidad</th><th>Precio unitario</th><th>Subtotal</th><th>Pago</th></tr></thead><tbody>${rows||'<tr><td colspan="5">Sin desglose registrado</td></tr>'}</tbody></table></section>`;}).join('');
  const rows=o.costDetails||[],sum=a=>a.reduce((v,r)=>v+(Number(r.qty)||0)*(Number(r.unit)||0),0),paid=sum(rows.filter(r=>r.paid)),pending=sum(rows.filter(r=>!r.paid)),sale=Number(o.sale)||0,profit=Number(o.profit)||0;
  const w=window.open('','_blank');if(!w){alert('Permite las ventanas emergentes para generar el PDF.');return;}
- w.document.open();w.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Orden · Jipi Jailón Pro</title><style>body{font:12px Arial,sans-serif;color:#172033;margin:28px}header{display:flex;align-items:center;gap:14px;border-bottom:3px solid #172554;padding-bottom:12px}header img{width:64px;height:64px;object-fit:contain}h1{color:#172554;margin:0;font-size:22px}h2{font-size:15px;color:#172554;margin:20px 0 8px}.muted{color:#64748b}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.stats div{border:1px solid #dbe3ef;border-radius:8px;padding:9px}.stats small{display:block;color:#64748b;margin-bottom:4px}.stats b{font-size:14px}table{width:100%;border-collapse:collapse;margin:8px 0 14px}th,td{border:1px solid #dbe3ef;padding:7px;text-align:left}th{background:#eff4fb}.summary{background:#f3f6fb;padding:12px;border-radius:9px;line-height:1.8}@media print{body{margin:12mm}section{break-inside:avoid}}</style></head><body><header><img src="https://erogenius.github.io/confeccion-pro/icon-192.png?v=152" alt="Jipi Jailón"><div><h1>Jipi Jailón Pro</h1><div class="muted">Reporte de producción</div></div></header><p><b>Cliente:</b> ${reportEscape(o.clientName||'—')} &nbsp; <b>Teléfono:</b> ${reportEscape(o.clientSnapshot?.phone||'—')}<br><b>Orden:</b> ${reportEscape(o.id)} &nbsp; <b>Fecha:</b> ${reportEscape(o.createdDate||(o.created||'').slice(0,10))} &nbsp; <b>Entrega:</b> ${reportEscape(o.due||'Sin fecha')}</p>${html}<h2>Resumen financiero</h2><div class="summary">Venta total: <b>${money(sale)}</b><br>Costo total de producción: <b>${money(o.cost)}</b><br>Gastos pagados: <b>${money(paid)}</b><br>Gastos pendientes: <b>${money(pending)}</b><br>Anticipo recibido: <b>${money(o.advance)}</b><br>Saldo por cobrar: <b>${money(Math.max(0,sale-(Number(o.advance)||0)))}</b><br>Utilidad estimada: <b>${money(profit)}</b><br>Rentabilidad: <b>${sale?(profit/sale*100).toFixed(1):'0,0'}%</b></div>${o.notes?'<h2>Observaciones</h2><p>'+reportEscape(o.notes)+'</p>':''}<p class="muted">Generado el ${new Date().toLocaleString('es-BO')}</p><script>window.onload=()=>setTimeout(()=>window.print(),350);<\/script></body></html>`);w.document.close();
+ w.document.open();w.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Orden · Jipi Jailón Pro</title><style>body{font:12px Arial,sans-serif;color:#172033;margin:28px}header{display:flex;align-items:center;gap:14px;border-bottom:3px solid #172554;padding-bottom:12px}header img{width:64px;height:64px;object-fit:contain}h1{color:#172554;margin:0;font-size:22px}h2{font-size:15px;color:#172554;margin:20px 0 8px}.muted{color:#64748b}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.stats div{border:1px solid #dbe3ef;border-radius:8px;padding:9px}.stats small{display:block;color:#64748b;margin-bottom:4px}.stats b{font-size:14px}table{width:100%;border-collapse:collapse;margin:8px 0 14px}th,td{border:1px solid #dbe3ef;padding:7px;text-align:left}th{background:#eff4fb}.summary{background:#f3f6fb;padding:12px;border-radius:9px;line-height:1.8}@media print{body{margin:12mm}section{break-inside:avoid}}</style></head><body><header><img src="https://erogenius.github.io/confeccion-pro/icon-192.png?v=160" alt="Jipi Jailón"><div><h1>Jipi Jailón Pro</h1><div class="muted">Reporte de producción</div></div></header><p><b>Cliente:</b> ${reportEscape(o.clientName||'—')} &nbsp; <b>Teléfono:</b> ${reportEscape(o.clientSnapshot?.phone||'—')}<br><b>Orden:</b> ${reportEscape(o.id)} &nbsp; <b>Fecha:</b> ${reportEscape(o.createdDate||(o.created||'').slice(0,10))} &nbsp; <b>Entrega:</b> ${reportEscape(o.due||'Sin fecha')}</p>${html}<h2>Resumen financiero</h2><div class="summary">Venta total: <b>${money(sale)}</b><br>Costo total de producción: <b>${money(o.cost)}</b><br>Gastos pagados: <b>${money(paid)}</b><br>Gastos pendientes: <b>${money(pending)}</b><br>Anticipo recibido: <b>${money(o.advance)}</b><br>Saldo por cobrar: <b>${money(Math.max(0,sale-(Number(o.advance)||0)))}</b><br>Utilidad estimada: <b>${money(profit)}</b><br>Rentabilidad: <b>${sale?(profit/sale*100).toFixed(1):'0,0'}%</b></div>${o.notes?'<h2>Observaciones</h2><p>'+reportEscape(o.notes)+'</p>':''}<p class="muted">Generado el ${new Date().toLocaleString('es-BO')}</p><script>window.onload=()=>setTimeout(()=>window.print(),350);<\/script></body></html>`);w.document.close();
 };
 
 function refreshOrders(){
@@ -681,7 +699,7 @@ function refreshOrders(){
    <div class="order-pay"><span>Anticipo <b>${money(o.advance)}</b></span><span>Saldo <b>${money(Number(o.sale||0)-Number(o.advance||0))}</b></span></div>
    ${(o.images||[]).length?`<div class="order-photos">${o.images.map(src=>`<img src="${src}" alt="Fotografía del pedido" loading="lazy">`).join('')}</div>`:''}
    ${o.costDetails?.length?(()=>{const rows=o.costDetails;const paid=rows.filter(r=>r.paid).length;const paidValue=rows.filter(r=>r.paid).reduce((s,r)=>s+(Number(r.qty)||0)*(Number(r.unit)||0),0);const pendingValue=rows.filter(r=>!r.paid).reduce((s,r)=>s+(Number(r.qty)||0)*(Number(r.unit)||0),0);return `<div class="purchase-progress"><div class="purchase-count"><span>Compras y pagos</span><strong>${paid} de ${rows.length} pagados</strong></div><div class="purchase-amount is-paid"><small>Total pagado</small><b>${money(paidValue)}</b></div><div class="purchase-amount"><small>Pendiente de pago</small><b>${money(pendingValue)}</b></div></div><details class="cost-details"><summary>Ver desglose y actualizar pagos</summary><div class="detail-list">${rows.map((r,i)=>`<div class="paid-row"><span>${safe(r.name)} <small>${r.qty} × ${money(r.unit)}</small></span><div><span class="paid-status ${r.paid?'yes':'no'}">${r.paid?'Pagado':'Pendiente'}</span><b>${money(r.qty*r.unit)}</b><input aria-label="Marcar ${safe(r.name)} como pagado" type="checkbox" ${r.paid?'checked':''} onchange="toggleCostPaid('${o.id}',${i},this.checked,this)"></div></div>`).join('')}<div class="cost-extra"><div><span>Imprevistos (10%)</span><b>${money(impre)}</b></div></div></div></details>`;})():''}
-   <div class="actions order-actions"><button class="secondary small" onclick="copyOrderReport('${o.id}')">Reporte de texto</button><button class="secondary small" onclick="pdfOrderReport('${o.id}')">Reporte PDF</button><button class="secondary small" onclick="editOrder('${o.id}')">Editar</button><button class="danger small" onclick="deleteOrder('${o.id}')">Eliminar</button></div>
+   <div class="actions order-actions"><button class="secondary small" onclick="editOrder('${o.id}')">Editar</button><button class="danger small" onclick="deleteOrder('${o.id}')">Eliminar</button></div>
   </article>`;
  }).join(''):'<div class="empty">Todavía no hay órdenes.</div>';
  refreshGlobalCashSummary();
@@ -755,68 +773,93 @@ function buildMonthlyReportText(){
  const rows=orders.filter(o=>(o.createdDate||(o.created||'').slice(0,10)).slice(0,7)===key).slice().sort((a,b)=>(a.createdDate||a.created||'').localeCompare(b.createdDate||b.created||''));
  const sale=rows.reduce((s,o)=>s+(Number(o.sale)||0),0),cost=rows.reduce((s,o)=>s+(Number(o.cost)||0),0),profit=sale-cost;
  const monthLabel=monthNames[Number(month)-1]||month;
- const lines=['CONFECCIÓN PRO','REPORTE MENSUAL · '+monthLabel.toUpperCase()+' '+year,'','RESUMEN','Pedidos: '+rows.length,'Ventas: '+money(sale),'Costos: '+money(cost),'Utilidad: '+money(profit),'','PEDIDOS'];
+ const lines=['JIPI JAILÓN PRO','REPORTE MENSUAL · '+monthLabel.toUpperCase()+' '+year,'','RESUMEN','Pedidos: '+rows.length,'Ventas: '+money(sale),'Costos: '+money(cost),'Utilidad: '+money(profit),'','PEDIDOS'];
  if(!rows.length)lines.push('No hay pedidos en este período.');
  rows.forEach((o,i)=>{lines.push((i+1)+'. '+(o.clientName||'Cliente'));lines.push('   Fecha: '+(o.createdDate||(o.created||'').slice(0,10)));lines.push('   Producto: '+(o.product||'No especificado'));lines.push('   Venta: '+money(o.sale)+' | Costo: '+money(o.cost)+' | Utilidad: '+money((Number(o.sale)||0)-(Number(o.cost)||0)));lines.push('');});
- lines.push('Generado: '+new Date().toLocaleString('es-BO'));
+ lines.push('Generado: '+new Date().toLocaleString('es-BO'));return lines.join('\n');
+}
+function getWorkOrderProducts(o){return Array.isArray(o.products)&&o.products.length?o.products:[{name:o.product,qty:o.qty,giftedQty:0,status:o.status||'Pendiente de iniciar',costDetails:o.costDetails||[],unexpectedRows:[]}];}
+function getWorkOrderRows(o){return Array.isArray(o.costDetails)&&o.costDetails.length?o.costDetails:getWorkOrderProducts(o).flatMap(p=>Array.isArray(p.costDetails)?p.costDetails:[]);}
+function getWorkOrderUnexpected(o){const products=getWorkOrderProducts(o);let items=products.flatMap(p=>(p.unexpectedRows||[]).map(r=>({description:r.description||r.name||'Imprevisto',amount:Number(r.amount)||0})));if(!items.length&&Number(o.contingency||0)>0)items=[{description:'Imprevistos registrados',amount:Number(o.contingency)||0}];return items;}
+function getWorkOrderContingencyBalance(o){return getWorkOrderProducts(o).reduce((total,p)=>{const budget=Number(p.contingencyBudget)||0;const spent=(p.unexpectedRows||[]).reduce((sum,r)=>sum+(Number(r.amount)||0),0);return total+Math.max(0,budget-spent);},0);}
+function buildWorkOrdersReportText(){
+ const lines=['*JIPI JAILÓN PRO*','*REPORTE GENERAL DE ÓRDENES DE TRABAJO*','Órdenes incluidas: '+orders.length,''];
+ if(!orders.length)lines.push('No hay órdenes registradas.');
+ orders.slice().sort((a,b)=>(a.createdDate||a.created||'').localeCompare(b.createdDate||b.created||'')).forEach((o,i)=>{
+  const ps=getWorkOrderProducts(o),
+   produced=ps.reduce((n,p)=>n+(Number(p.qty)||0),0),
+   gifted=ps.reduce((n,p)=>n+(Number(p.giftedQty)||0),0),
+   statuses=[...new Set(ps.map(p=>p.status||o.status||'Pendiente de iniciar'))],
+   rows=getWorkOrderRows(o),
+   contingencyBalance=getWorkOrderContingencyBalance(o),
+   paid=rows.filter(r=>r.paid===true),
+   pending=rows.filter(r=>r.paid!==true),
+   sum=a=>a.reduce((n,r)=>n+(Number(r.qty)||0)*(Number(r.unit)||0),0);
+
+  lines.push('━━━━━━━━━━━━━━━━━━','📌 *ORDEN '+(i+1)+'*',
+   '*Cliente:* '+(o.clientName||'—'),
+   '*Estado:* '+statuses.join(' / '),
+   '',
+   '💰 *RESUMEN*',
+   'Venta total: '+money(o.sale),
+   'Costo total del producto: '+money(o.cost),
+   'Anticipo: '+money(o.advance),
+   '',
+   '👕 *PRODUCCIÓN*',
+   'Prendas por producir: '+produced,
+   'Prendas de obsequio: '+gifted,
+   '',
+   '🧾 *DESGLOSE Y PAGOS*');
+
+  if(paid.length){
+   lines.push('✓ *PAGADOS*');
+   paid.forEach(r=>{
+    lines.push('• '+(r.name||r.description||'Concepto'));
+    lines.push('  '+money((Number(r.qty)||0)*(Number(r.unit)||0)));
+   });
+  }
+  if(pending.length){
+   lines.push('○ *PENDIENTES*');
+   pending.forEach(r=>{
+    lines.push('• '+(r.name||r.description||'Concepto'));
+    lines.push('  '+money((Number(r.qty)||0)*(Number(r.unit)||0)));
+   });
+  }
+  if(!rows.length)lines.push('Sin desglose registrado.');
+
+  lines.push('',
+   '💵 *RESUMEN DE PAGOS*',
+   'Total pagado: '+money(sum(paid)),
+   'Pendiente de pago: '+money(sum(pending)),
+   '',
+   'Saldo disponible para imprevistos:',
+   money(contingencyBalance),
+   '');
+ });
+ lines.push('━━━━━━━━━━━━━━━━━━','Generado: '+new Date().toLocaleString('es-BO'));
  return lines.join('\n');
 }
-function refreshReportTextPreview(){const el=$('reportTextPreview');if(el)el.value=buildMonthlyReportText();}
-function generateMonthlyReportPdf(){
- const month=$('reportMonth').value,year=$('reportYear').value,key=year+'-'+month;
- const rows=orders.filter(o=>(o.createdDate||(o.created||'').slice(0,10)).slice(0,7)===key).slice().sort((a,b)=>(a.createdDate||a.created||'').localeCompare(b.createdDate||b.created||''));
- const sale=rows.reduce((s,o)=>s+(Number(o.sale)||0),0),cost=rows.reduce((s,o)=>s+(Number(o.cost)||0),0),profit=sale-cost;
- const monthLabel=monthNames[Number(month)-1]||month;
- const tableRows=rows.map(o=>`<tr><td>${reportEscape(o.createdDate||(o.created||'').slice(0,10))}</td><td>${reportEscape(o.clientName||'')}</td><td>${reportEscape(o.product||'')}</td><td>${money(o.sale)}</td><td>${money(o.cost)}</td><td>${money((Number(o.sale)||0)-(Number(o.cost)||0))}</td></tr>`).join('');
- const win=window.open('','_blank');if(!win){alert('El navegador bloqueó la ventana del reporte. Permite las ventanas emergentes e inténtalo nuevamente.');return;}
- win.document.open();win.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reporte ${monthLabel} ${year} - Jipi Jailón Pro</title><style>body{font:12px Arial,sans-serif;color:#172033;margin:28px}h1{color:#172554;margin:0 0 4px;font-size:22px}.muted{color:#64748b}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0}.stats div{border:1px solid #dbe3ef;border-radius:8px;padding:10px}.stats small{display:block;color:#64748b;margin-bottom:5px}.stats b{font-size:15px}table{width:100%;border-collapse:collapse;margin:8px 0 14px}th,td{border:1px solid #dbe3ef;padding:7px;text-align:left;vertical-align:top}th{background:#eff4fb}@media print{body{margin:12mm}}@media(max-width:650px){body{margin:12px}.stats{grid-template-columns:repeat(2,1fr)}table{font-size:10px}}
-.app-header{display:flex;align-items:center;gap:12px;min-height:82px;padding:12px 16px}
-.app-logo{width:58px;height:58px;object-fit:contain;background:#fff;border-radius:13px;padding:3px;flex:0 0 auto}
-.app-brand{min-width:0;flex:1}
-.app-brand h1{font-size:20px;line-height:1.2;margin:0 0 5px}
-.app-brand p{font-size:12px;line-height:1.35}
-.app-version{flex:0 0 auto;border:1px solid #93c5fd;color:#dbeafe;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:750;white-space:nowrap}
-#reportes .actions{margin-bottom:16px}
-#reportes .statgrid{margin-top:14px;gap:12px}
-#reportes .stat{padding:14px;min-height:82px}
-@media(max-width:390px){.app-header{gap:9px;padding-left:12px;padding-right:12px}.app-logo{width:50px;height:50px}.app-brand h1{font-size:17px}.app-brand p{font-size:10px}.app-version{font-size:10px;padding:4px 7px}}
-
-</style></head><body><h1>Jipi Jailón Pro</h1><div class="muted">Reporte simple · ${monthLabel} ${year} · Bolivianos (Bs)</div><section class="stats"><div><small>Pedidos</small><b>${rows.length}</b></div><div><small>Ventas</small><b>${money(sale)}</b></div><div><small>Costos</small><b>${money(cost)}</b></div><div><small>Utilidad</small><b>${money(profit)}</b></div></section><h2>Listado de pedidos</h2><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Producto(s)</th><th>Venta</th><th>Costo</th><th>Utilidad</th></tr></thead><tbody>${tableRows||'<tr><td colspan="6">No hay pedidos en este período.</td></tr>'}</tbody></table><p class="muted">Generado el ${new Date().toLocaleString('es-BO')}</p><script>window.onload=()=>setTimeout(()=>window.print(),300);<\/script></body></html>`);win.document.close();
+function refreshWorkOrdersReport(){
+ const totalSale=orders.reduce((n,o)=>n+(Number(o.sale)||0),0),advances=orders.reduce((n,o)=>n+(Number(o.advance)||0),0),garments=orders.reduce((n,o)=>n+getWorkOrderProducts(o).reduce((m,p)=>m+(Number(p.qty)||0),0),0);
+ $('workOrderCount').textContent=orders.length;$('workOrderSales').textContent=money(totalSale);$('workOrderAdvances').textContent=money(advances);$('workOrderGarments').textContent=garments;
+ $('workOrdersReportDetails').innerHTML=orders.length?orders.slice().reverse().map((o,i)=>{const ps=getWorkOrderProducts(o),produced=ps.reduce((n,p)=>n+(Number(p.qty)||0),0),gifted=ps.reduce((n,p)=>n+(Number(p.giftedQty)||0),0),statuses=[...new Set(ps.map(p=>p.status||o.status||'Pendiente de iniciar'))],rows=getWorkOrderRows(o),contingencyBalance=getWorkOrderContingencyBalance(o),sum=a=>a.reduce((n,r)=>n+(Number(r.qty)||0)*(Number(r.unit)||0),0),paid=rows.filter(r=>r.paid===true),pending=rows.filter(r=>r.paid!==true);return `<div class="card" style="margin:10px 0;background:#f8fafc"><h3>Orden ${orders.length-i} · ${safe(o.clientName||'Sin cliente')}</h3><div class="report-row"><span>Estado</span><b>${safe(statuses.join(' / '))}</b></div><div class="report-row"><span>Venta total</span><b>${money(o.sale)}</b></div><div class="report-row"><span>Costo total del producto</span><b>${money(o.cost)}</b></div><div class="report-row"><span>Anticipo</span><b>${money(o.advance)}</b></div><div class="report-row"><span>Prendas por producir</span><b>${produced}</b></div><div class="report-row"><span>Prendas de obsequio</span><b>${gifted}</b></div><div style="padding:8px 0"><b>Desglose y pagos</b>${rows.length?rows.map(r=>`<div class="report-row"><span>${safe(r.name||'Concepto')}<br><span class="muted">${r.paid===true?'Pagado':'Pendiente'}</span></span><b>${money((Number(r.qty)||0)*(Number(r.unit)||0))}</b></div>`).join(''):'<p class="muted">Sin desglose registrado.</p>'}<div class="report-row"><span>Total pagado</span><b>${money(sum(paid))}</b></div><div class="report-row"><span>Pendiente de pago</span><b>${money(sum(pending))}</b></div></div><div class="report-row"><span>Saldo disponible para imprevistos</span><b>${money(contingencyBalance)}</b></div></div>`;}).join(''):'<div class="empty">No hay órdenes registradas.</div>';
 }
-$('copyReportText').addEventListener('click',async()=>{
- const area=$('reportTextPreview'),text=area.value||buildMonthlyReportText();
- if(!text.trim()){alert('No hay contenido para copiar.');return;}
- let copied=false;
- try{
-  area.focus();
-  area.removeAttribute('readonly');
-  area.value=text;
-  area.setSelectionRange(0,area.value.length);
-  if(document.execCommand)copied=document.execCommand('copy');
- }catch(e){}
- if(!copied){
-  try{
-   if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);copied=true;}
-  }catch(e){}
- }
- area.setAttribute('readonly','readonly');
- if(copied){
-  area.setSelectionRange(0,0);
-  alert('¡Reporte copiado! Ahora puedes pegarlo en WhatsApp.');
- }else{
-  area.focus();
-  area.setSelectionRange(0,area.value.length);
-  alert('El reporte quedó seleccionado. Mantén presionado el texto y toca “Copiar”. Luego pégalo en WhatsApp.');
- }
-});
-$('generateReportPdf').addEventListener('click',generateMonthlyReportPdf);
+function getSelectedReportText(){return $('reportType').value==='workorders'?buildWorkOrdersReportText():buildMonthlyReportText();}
+function refreshReportTextPreview(){const el=$('reportTextPreview');if(el)el.value=getSelectedReportText();}
+function refreshReports(){const isWork=$('reportType').value==='workorders';$('monthlyReportPanel').hidden=isWork;$('workOrdersReportPanel').hidden=!isWork;if(isWork)refreshWorkOrdersReport();else refreshMonthlyReport();refreshReportTextPreview();}
+$('reportType').addEventListener('change',refreshReports);
+function openReportPrintWindow(title,body){const win=window.open('','_blank');if(!win){alert('El navegador bloqueó la ventana del reporte. Permite las ventanas emergentes e inténtalo nuevamente.');return;}win.document.open();win.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${reportEscape(title)}</title><style>body{font:12px Arial,sans-serif;color:#172033;margin:28px}h1{color:#172554;margin:0 0 5px;font-size:22px}h2{color:#172554;font-size:16px;margin:20px 0 8px}.muted{color:#64748b}.order{border:1px solid #dbe3ef;border-radius:9px;padding:12px;margin:12px 0;break-inside:avoid}.row{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #e2e8f0;padding:6px 0}.row:last-child{border:0}.sub{margin:8px 0 8px 12px}.tag{font-weight:bold;color:#1d4ed8}table{width:100%;border-collapse:collapse}td,th{border:1px solid #dbe3ef;padding:7px;text-align:left}@media print{body{margin:12mm}}</style></head><body><h1>Jipi Jailón Pro</h1><div class="muted">${reportEscape(title)} · Bolivianos (Bs)</div>${body}<p class="muted">Generado el ${new Date().toLocaleString('es-BO')}</p><script>window.onload=()=>setTimeout(()=>window.print(),350);<\/script></body></html>`);win.document.close();}
+function generateMonthlyReportPdf(){const month=$('reportMonth').value,year=$('reportYear').value,key=year+'-'+month,rows=orders.filter(o=>(o.createdDate||(o.created||'').slice(0,10)).slice(0,7)===key).slice().sort((a,b)=>(a.createdDate||a.created||'').localeCompare(b.createdDate||b.created||'')),sale=rows.reduce((s,o)=>s+(Number(o.sale)||0),0),cost=rows.reduce((s,o)=>s+(Number(o.cost)||0),0),monthLabel=monthNames[Number(month)-1]||month;const tableRows=rows.map(o=>`<tr><td>${reportEscape(o.createdDate||(o.created||'').slice(0,10))}</td><td>${reportEscape(o.clientName||'')}</td><td>${reportEscape(o.product||'')}</td><td>${money(o.sale)}</td><td>${money(o.cost)}</td><td>${money((Number(o.sale)||0)-(Number(o.cost)||0))}</td></tr>`).join('');openReportPrintWindow('Reporte mensual · '+monthLabel+' '+year,`<p>Pedidos: <b>${rows.length}</b> · Ventas: <b>${money(sale)}</b> · Costos: <b>${money(cost)}</b> · Utilidad: <b>${money(sale-cost)}</b></p><h2>Listado de pedidos</h2><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Producto(s)</th><th>Venta</th><th>Costo</th><th>Utilidad</th></tr></thead><tbody>${tableRows||'<tr><td colspan="6">No hay pedidos en este período.</td></tr>'}</tbody></table>`);}
+function generateWorkOrdersReportPdf(){const html=orders.length?orders.map((o,i)=>{const ps=getWorkOrderProducts(o),produced=ps.reduce((n,p)=>n+(Number(p.qty)||0),0),gifted=ps.reduce((n,p)=>n+(Number(p.giftedQty)||0),0),statuses=[...new Set(ps.map(p=>p.status||o.status||'Pendiente de iniciar'))],rows=getWorkOrderRows(o),contingencyBalance=getWorkOrderContingencyBalance(o),sum=a=>a.reduce((n,r)=>n+(Number(r.qty)||0)*(Number(r.unit)||0),0),paid=rows.filter(r=>r.paid===true),pending=rows.filter(r=>r.paid!==true);return `<div class="order"><h2>Orden ${i+1} · ${reportEscape(o.clientName||'Sin cliente')}</h2><div class="row"><span>Estado</span><b>${reportEscape(statuses.join(' / '))}</b></div><div class="row"><span>Venta total</span><b>${money(o.sale)}</b></div><div class="row"><span>Costo total del producto</span><b>${money(o.cost)}</b></div><div class="row"><span>Anticipo</span><b>${money(o.advance)}</b></div><div class="row"><span>Prendas por producir</span><b>${produced}</b></div><div class="row"><span>Prendas de obsequio</span><b>${gifted}</b></div><h3>Desglose y pagos</h3>${rows.length?rows.map(r=>`<div class="row"><span>${reportEscape(r.name||'Concepto')} · ${r.paid===true?'Pagado':'Pendiente'}</span><b>${money((Number(r.qty)||0)*(Number(r.unit)||0))}</b></div>`).join(''):'<p>Sin desglose registrado.</p>'}<div class="row"><span>Total pagado</span><b>${money(sum(paid))}</b></div><div class="row"><span>Pendiente de pago</span><b>${money(sum(pending))}</b></div><div class="row"><span>Saldo disponible para imprevistos</span><b>${money(contingencyBalance)}</b></div></div>`;}).join(''):'<p>No hay órdenes registradas.</p>';openReportPrintWindow('Reporte general de órdenes de trabajo',`<p>Total de órdenes: <b>${orders.length}</b></p>${html}`);}
+$('copyReportText').addEventListener('click',async()=>{const area=$('reportTextPreview'),text=getSelectedReportText();if(!text.trim()){alert('No hay contenido para copiar.');return;}let copied=false;try{area.focus();area.setSelectionRange(0,area.value.length);if(document.execCommand)copied=document.execCommand('copy');}catch(e){}if(!copied){try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);copied=true;}}catch(e){}}if(copied){area.setSelectionRange(0,0);alert('¡Reporte copiado! Ahora puedes pegarlo en WhatsApp.');}else{area.focus();area.setSelectionRange(0,area.value.length);alert('El reporte quedó seleccionado. Mantén presionado el texto y toca “Copiar”. Luego pégalo en WhatsApp.');}});
+$('generateReportPdf').addEventListener('click',()=>{$('reportType').value==='workorders'?generateWorkOrdersReportPdf():generateMonthlyReportPdf();});
 function refreshStats(){
  let sale=orders.reduce((a,o)=>a+(Number(o.sale)||0),0),cost=orders.reduce((a,o)=>a+(Number(o.cost)||0),0);
  $('statOrders').textContent=orders.length;$('statSales').textContent=money(sale);$('statCosts').textContent=money(cost);$('statProfit').textContent=money(sale-cost);
  const counts={'Pendiente de iniciar':0,'En producción':0,'En terminación':0,'Listo para entregar':0,'Entregada':0};
  orders.forEach(o=>{const ps=Array.isArray(o.products)&&o.products.length?o.products:[{status:o.status||'Pendiente de iniciar'}];ps.forEach(p=>{const status=counts.hasOwnProperty(p.status)?p.status:'Pendiente de iniciar';counts[status]++;});});
  $('countPending').textContent=counts['Pendiente de iniciar'];$('countMaking').textContent=counts['En producción'];
- $('countFinishing').textContent=counts['En terminación'];$('countReady').textContent=counts['Listo para entregar'];$('countDelivered').textContent=counts['Entregada'];refreshDeliveryAlerts();refreshMonthlyReport();
+ $('countFinishing').textContent=counts['En terminación'];$('countReady').textContent=counts['Listo para entregar'];$('countDelivered').textContent=counts['Entregada'];refreshDeliveryAlerts();refreshMonthlyReport();if($('reportType')&&$('reportType').value==='workorders')refreshWorkOrdersReport();
 }
 function resetClientForm(){editingClientId=null;$('clientName').value='';$('clientPhone').value='';$('clientSource').value='';$('saveClient').textContent='Guardar cliente';$('cancelClientEdit').hidden=true;}
 window.editClient=id=>{const c=clients.find(x=>x.id===id);if(!c)return;editingClientId=id;$('clientName').value=c.name||'';$('clientPhone').value=c.phone||'';$('clientSource').value=c.source||'';$('saveClient').textContent='Guardar cambios';$('cancelClientEdit').hidden=false;document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab==='clientes'));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='clientes'));window.scrollTo({top:0,behavior:'smooth'});};
@@ -1026,7 +1069,7 @@ $('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{co
  if(main)main.style.pointerEvents='none';
  await initializeLocalDatabase();
  await refreshDatabaseManager();
- refreshClients();refreshMaterials();refreshLabor();refreshOrders();refreshStats();refreshHolidays();initReportFilters();refreshMonthlyReport();$('startDate').value=isoDateLocal(new Date());updateDueDate();calculate();
+ refreshClients();refreshMaterials();refreshLabor();refreshOrders();refreshStats();refreshHolidays();initReportFilters();refreshReports();$('startDate').value=isoDateLocal(new Date());updateDueDate();calculate();
  if(main)main.style.pointerEvents='';
 })();
 if('serviceWorker'in navigator&&location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
